@@ -94,19 +94,45 @@ router.get('/chatroomsg', function (req, res) {
                 resErr(res);
             } else {
                 if (vals[0]) {
-                    const token = jwt.sign({...params}, scret, { expiresIn: 3600 });
-                    const data = {
-                        token: token,
-                        mes: '登陆成功'
-                    }
-                    resFun(res, 200, {...data});
+                    resFun(res, 200, vals);
                 } else {
-                    resFun(res, 200, '用户名或密码错误');
+                    resFun(res, 200, '暂无数据');
                 }
             }
         });
     });
 });
 
+/**
+ * 发表文章
+ */
+router.post('/publish', function (req, res) {
+    const params = {
+        id: uuid.v1(),
+        nickname: '',
+        title: '',
+        msg: '',
+        viewnum: 0,
+        createtime: Date.now()
+    }
+    Object.assign(params, req.body);
+    const isempty = isEmpty(params);
+    if (isempty) {
+        return resEmp(res);
+    }
+    decodeToken(req, res, () => {
+        query(`insert into artic (id, nickname, title, msg, viewnum, createtime)
+        values ("${params.id}", "${params.nickname}", "${params.title}", "${params.msg}",
+        "${params.viewnum}", "${params.createtime}")`,
+        function (err,vals,fields) {
+            if (err) {
+                console.log(err);
+                resErr(res);
+            } else {
+                resFun(res, 200, '发表成功');
+            }
+        });
+    });
+});
 
 module.exports = router;
