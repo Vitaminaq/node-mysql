@@ -3,6 +3,7 @@ const router = express.Router();
 const query = require('../db/connect');
 const {resFun, resErr, resEmp} = require('../common/response');
 const isEmpty = require('../common/isEmpty');
+const register = require('../control/register');
 
 const uuid = require('node-uuid');
 const jwt =  require('jsonwebtoken');
@@ -12,43 +13,7 @@ const decodeToken = require('../common/token');
 /**
  * 用户注册
  */
-router.post('/register', function (req, res) {
-    let params = {
-        nickname: '',
-        name: '',
-        sex: '',
-        headimg: '1',
-        password: '',
-        age: ''
-    }
-    Object.assign(params, req.body);
-    const isempty = isEmpty(params);
-    if (isempty) {
-        return resEmp(res);
-    }
-    query(`select id from usermessage where nickname = "${req.body.nickname}"`,
-    function (err,vals,fields) {
-        if (err) {
-            resErr(res);
-        } else {
-            if (vals[0]) {
-                resFun(res, 200, '此昵称已存在');
-            } else {
-                const id = uuid.v1();
-                query(`insert into usermessage (id, username, nickname, sex, headimg, password, age)
-                values ("${id}", "${params.name}", "${params.nickname}", "${params.sex}",
-                "${params.headimg}", "${params.password}", "${params.age}")`,
-                function (err, vals, fields) {
-                    if (err) {
-                        resErr(res);
-                    } else {
-                        resFun(res, 200, '注册成功');
-                    }
-                });
-            }
-        }
-    });
-});
+router.post('/register', (req, res) => register(req, res));
 
 /**
  * 用户登录
