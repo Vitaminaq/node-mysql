@@ -14,14 +14,14 @@ if (pool) {
     console.log('数据库连接失败，请重试');
 }
 
-const query = function (sql) {
+const query = function (sql, params) {
     return new Promise((resolve, reject) => {
         pool.getConnection(function(err, conn) {
             if (err) {
                 console.log(err);
                 reject(err);
             } else {
-                conn.query(sql,(err, result) => {
+                conn.query(sql, params, (err, result) => {
                     conn.release();
                     if(err) reject(err);
                     else resolve(result);
