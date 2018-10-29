@@ -14,16 +14,20 @@ if (pool) {
     console.log('数据库连接失败，请重试');
 }
 
-const query = function (sql, callback) {
-    pool.getConnection(function(err, conn) {
-        if (err) {
-            callback(err, null, null);
-        } else {
-            conn.query(sql, function (err, vals, fields) {
-                conn.release();
-                callback(err, vals, fields)
-            })
-        }
+const query = function (sql) {
+    return new Promise((resolve, reject) => {
+        pool.getConnection(function(err, conn) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else {
+                conn.query(sql,(err, result) => {
+                    conn.release();
+                    if(err) reject(err);
+                    else resolve(result);
+                });
+            }
+        });
     })
 }
 module.exports = query;
