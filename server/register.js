@@ -3,15 +3,8 @@ const {resFun, resErr} = require('../common/response');
 
 const isExitNickname = function (nickname) {
     console.log(nickname);
-    query(`select uid from usermessage where nickname = "${nickname}"`, function (err, vals) {
-        console.log(err, 11111111);
-        console.log(vals, 22222222)
-        if (err) {
-            return err;
-        } else {
-            return vals;
-        }
-    });
+    const result = await query(`select uid from usermessage where nickname = "${nickname}"`);
+    return result;
 }
 
 /**
