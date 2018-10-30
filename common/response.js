@@ -7,14 +7,14 @@ const resFun = function (res, code, data) {
 
 const resErr = function (res) {
     res.json({
-        code: 500,
+        code: 10003,
         data: '服务器错误'
     })
 }
 
 const resEmp = function (res) {
     res.json({
-        code: 200,
+        code: 10001,
         data: '必须填字段不能为空'
     })
 }

@@ -1,6 +1,8 @@
 const { isExitNickname, userRegister } = require('../server/register');
 const isEmpty = require('../common/isEmpty');
-const {resEmp} = require('../common/response');
+const { resEmp, resFun, resErr } = require('../common/response');
+const crypto = require('crypto');
+const hash = crypto.createHash('md5');
 
 /**
  * 用户注册
@@ -9,8 +11,8 @@ const {resEmp} = require('../common/response');
  */
 const register = async function (req, res) {
     let params = {
+        username: '',
         nickname: '',
-        name: '',
         sex: '',
         headimg: '1',
         password: '',
@@ -22,10 +24,18 @@ const register = async function (req, res) {
     if (isempty) {
         return resEmp(res);
     }
-    const result = await isExitNickname(params.nickname);
-    console.log(result, 33333333333);
-    // const result = await userRegister(req, res, params);
-    return result;
+    params.password = hash.update(params.password).digest('hex');
+    let result;
+    const r = await isExitNickname(params.nickname);
+    if (r === 1) return resErr(res);
+    if (!r[0]) {
+       result = await userRegister(params);
+       if (result === 1) return resErr(res);
+       return resFun(res, 0, result); 
+    } else {
+       result = '此昵称已存在'
+       return resFun(res, 10002, result);
+    }
 }
 
 module.exports = register;
