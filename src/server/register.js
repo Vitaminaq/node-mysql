@@ -1,9 +1,10 @@
 'use strict';
-const query = require('../db/connect');
+
+const query = require('../../db/connect');
 
 /**
  * 检查注册昵称是否已存在
- * @param {*} nickname  用户昵称 
+ * @param {string} nickname  用户昵称 
  */
 const isExitNickname = async function (nickname) {
     try {
@@ -16,13 +17,13 @@ const isExitNickname = async function (nickname) {
 
 /**
  * 用户注册
- * @param {*} params.username  姓名
- * @param {*} params.nickname  昵称
- * @param {*} params.sex  性别
- * @param {*} params.headimg  头像
- * @param {*} params.password  密码
- * @param {*} params.age  年龄
- * @param {*} params.creatAt  注册时间
+ * @param {string} params.username  姓名
+ * @param {string} params.nickname  昵称
+ * @param {string} params.sex  性别
+ * @param {string} params.headimg  头像
+ * @param {string} params.password  密码
+ * @param {number} params.age  年龄
+ * @param {number} params.creatAt  注册时间
  */
 const userRegister = async function (params) {
     try {

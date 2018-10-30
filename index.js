@@ -6,10 +6,10 @@ app.listen(port); // 监听 port[3000]端口
 console.log('start on port' + port);
 
 
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-const user = require('./routes/user');
+const user = require('./src/routes/user');
 
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

@@ -1,6 +1,6 @@
 const jwt =  require('jsonwebtoken');
-const { resFun } = require('../common/response');
-const scret = require('../local-config/token-scret');
+const { resFun } = require('./response');
+const scret = require('../../local-config/token-scret');
 
 const decodeToke = function (req, res, next) {
     const token = req.headers.authorization;

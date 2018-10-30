@@ -7,7 +7,7 @@ const resFun = function (res, code, data) {
 
 const resErr = function (res) {
     res.json({
-        code: 10003,
+        code: 12000,
         data: '服务器错误'
     })
 }

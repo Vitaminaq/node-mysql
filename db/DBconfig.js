@@ -1,3 +1,6 @@
+/**
+ * 数据库配置
+ */
 module.exports = {
     HOST : 'localhost',
     USER : 'root',

@@ -1,8 +1,9 @@
+'use strict';
+
 const { isExitNickname, userRegister } = require('../server/register');
 const isEmpty = require('../common/isEmpty');
 const { resEmp, resFun, resErr } = require('../common/response');
-const crypto = require('crypto');
-const hash = crypto.createHash('md5');
+const myCrypto = require('../common/crypto');
 
 /**
  * 用户注册
@@ -24,14 +25,14 @@ const register = async function (req, res) {
     if (isempty) {
         return resEmp(res);
     }
-    params.password = hash.update(params.password).digest('hex');
+    params.password = myCrypto(params.password);
     let result;
     const r = await isExitNickname(params.nickname);
     if (r === 1) return resErr(res);
     if (!r[0]) {
        result = await userRegister(params);
        if (result === 1) return resErr(res);
-       return resFun(res, 0, result); 
+       return resFun(res, 0, '注册成功'); 
     } else {
        result = '此昵称已存在'
        return resFun(res, 10002, result);
