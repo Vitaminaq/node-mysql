@@ -5,6 +5,7 @@ const router = express.Router();
 const register = require('../control/register');
 const login = require('../control/login');
 const { getArtics, saveViews }= require('../control/chatroom');
+const { getArticDetails }= require('../control/detail');
 const publish = require('../control/publish');
 const decodeToken = require('../common/token');
 
@@ -40,6 +41,14 @@ router.post('/view',
 router.post('/publish', 
     (req, res, next) => decodeToken(req, res, next),
     (req, res) => publish(req, res)
+);
+
+/**
+ * 获取文章详情
+ */
+router.post('/detail',
+    (req, res, next) => decodeToken(req, res, next),
+    (req, res) => getArticDetails(req, res)
 );
 
 module.exports = router;

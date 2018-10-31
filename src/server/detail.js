@@ -3,16 +3,13 @@
 const query = require('../../db/connect');
 
 /**
- * 
- * @param {number} limit  数量
- * @param {number} page  页码
- * @param {string} field  排序字段
- * @param {string} sort  排序方式
+ * 获取文章详情
+ * @param {number} params.articId  文章id
  */
-const getArtic = async function ({ limit, page, field, sort }) {
+const getArticDetail = async function (params) {
     try {
         const r = await query(
-            `select * from artic order by ${field} ${sort} limit ${page * limit}, ${limit}`, {}
+            `select * from artic where ?`, params
         );
         return r;
     } catch (e) {
@@ -55,7 +52,7 @@ const saveView = async function ({ viewnum, articId }) {
 }
 
 module.exports = {
-    getArtic,
+    getArticDetail,
     getViewnum,
     saveView
 };
