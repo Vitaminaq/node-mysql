@@ -1,16 +1,19 @@
 const mysql = require('mysql');
 const cfg = require('./DBconfig');
+const CreateSchema = require('../sql/create-schema');
 
 /**
  * 创建连接池
  */
-const pool = mysql.createPool({
+const options = {
     host: cfg.HOST,
     user: cfg.USER,
     password: cfg.PASSWORD,
-    database: cfg.DATABASE,
-    port: cfg.PORT
-});
+    port: cfg.PORT,
+    database: cfg.DATABASE
+}
+let pool = mysql.createPool(options);
+
 if (pool) {
     console.log('数据库连接成功');
 } else {
@@ -42,14 +45,27 @@ const query = function (sql, params) {
                 console.log(err);
                 reject(err);
             } else {
-                const c = conn.query(sql, params, (err, result) => {
+                const c = conn.query(sql, params, (err, result, field) => {
                     conn.release();
                     if(err) reject(err);
-                    else resolve(result);
+                    else resolve({result, field});
                 });
                 console.log(`当前数据库操作${c.sql}`);
             }
         });
     });
 }
+
+const init = async () => {
+    await query(CreateSchema, {});
+    pool.end();
+    pool = mysql.createPool(options);
+    console.log(`数据库 ${pool.config.connectionConfig.database} 初始化成功`);
+}
+try {
+    init();
+} catch (e) {
+    console.log(`数据库初始化失败${e}`);
+}
+
 module.exports = query;
