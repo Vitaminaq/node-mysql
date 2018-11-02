@@ -12,10 +12,12 @@ app.use(bodyParser.json());
 const user = require('./src/routes/user');
 
 app.all('*', function(req, res, next) {
+    console.log(req.headers, 11111111);
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "content-type, authorization");
+    res.header("Access-Control-Allow-Headers", "content-type, authorization, Cookie");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-    // res.header("Content-Type", "text/html; charset=utf-8");
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header("Content-Type", "text/html; charset=utf-8");
     next();
 });
 
