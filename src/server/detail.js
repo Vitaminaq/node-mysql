@@ -4,14 +4,19 @@ const query = require('../../db/connect');
 
 /**
  * 获取文章详情
- * @param {number} params.articId  文章id
+ * @param {number} articId   文章id
+ * @param {number} nickname  昵称
  */
-const getArticDetail = async function (params) {
+const getArticDetail = async function ({ articId, nickname }) {
     try {
-        const r = await query(
-            `select * from artic where ?`, params
+        const r1 = await query(
+            `select * from artic where articId = ?`, [articId]
         );
-        return r;
+        const r2 = await query(
+            `select * from artic_click where articId = ? and name = ?`,
+            [articId, nickname]
+        );
+        return {r1, r2};
     } catch (e) {
         console.log(`错误为${e}`);
         return 1;
@@ -19,30 +24,14 @@ const getArticDetail = async function (params) {
 }
 
 /**
- * 查找浏览前的浏览数
- * @param {number} params.articId  文章id
+ * 点赞文章
+ * @param {number} articId   文章id
+ * @param {number} nickname  昵称
  */
-const getViewnum = async function (params) {
+const clickArtic = async function (params) {
     try {
         const r = await query(
-            `select viewnum from artic where ?`, params
-        );
-        return r;
-    } catch (e) {
-        console.log(`错误为${e}`);
-        return 1;
-    }
-}
-
-/**
- * 保存浏览数
- * @param {number} viewnum  文章浏览量
- * @param {number} articId  文章id
- */
-const saveView = async function ({ viewnum, articId }) {
-    try {
-        const r = await query(
-            `update artic set viewnum = ? WHERE articId = ? `, [viewnum, articId]
+            `insert into artic_click set ?`, params
         );
         return r;
     } catch (e) {
@@ -53,6 +42,5 @@ const saveView = async function ({ viewnum, articId }) {
 
 module.exports = {
     getArticDetail,
-    getViewnum,
-    saveView
+    clickArtic
 };

@@ -1,6 +1,8 @@
 const mysql = require('mysql');
 const cfg = require('./DBconfig');
-const CreateSchema = require('../sql/create-schema');
+// const CreateSchema = require('../sql/create-schema');
+// const CreateUsermessage = require('../sql/create-usermessage');
+// const CreateArtic = require('../sql/create-artic');
 
 /**
  * 创建连接池
@@ -45,27 +47,34 @@ const query = function (sql, params) {
                 console.log(err);
                 reject(err);
             } else {
-                const c = conn.query(sql, params, (err, result, field) => {
+                const c = conn.query(sql, params, (err, result) => {
                     conn.release();
                     if(err) reject(err);
-                    else resolve({result, field});
+                    else resolve(result);
                 });
-                console.log(`当前数据库操作${c.sql}`);
+                console.log(`当前数据库操作 ${c.sql}`);
             }
         });
     });
 }
 
-const init = async () => {
-    await query(CreateSchema, {});
-    pool.end();
-    pool = mysql.createPool(options);
-    console.log(`数据库 ${pool.config.connectionConfig.database} 初始化成功`);
-}
-try {
-    init();
-} catch (e) {
-    console.log(`数据库初始化失败${e}`);
-}
+/**
+ * 初始化数据库，不建议开启，实际操作，可能会更改用户数据，
+ * 可以玩玩
+ */
+// const init = async () => {
+//     await query(CreateSchema);
+//     pool.end();
+//     pool = mysql.createPool(options);
+//     console.log(`数据库 ${pool.config.connectionConfig.database} 初始化成功`);
+//     await query(CreateUsermessage);
+//     await query(CreateArtic);
+// }
+
+// try {
+//     // init();
+// } catch (e) {
+//     console.log(`数据库初始化失败${e}`);
+// }
 
 module.exports = query;

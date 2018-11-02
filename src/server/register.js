@@ -19,11 +19,11 @@ const isExitNickname = async function (nickname) {
  * 用户注册
  * @param {string} params.username  姓名
  * @param {string} params.nickname  昵称
- * @param {string} params.sex  性别
- * @param {string} params.headimg  头像
+ * @param {string} params.sex       性别
+ * @param {string} params.headimg   头像
  * @param {string} params.password  密码
- * @param {number} params.age  年龄
- * @param {number} params.creatAt  注册时间
+ * @param {number} params.age       年龄
+ * @param {number} params.creatAt   注册时间
  */
 const userRegister = async function (params) {
     try {

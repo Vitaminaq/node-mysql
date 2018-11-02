@@ -26,7 +26,10 @@ const login = async function (req, res) {
     const r = await userLogin(params);
     if (r === 1) return resErr(res);
     if (!r[0]) return resFun(res, 10003, '用户名或密码错误');
-    const token = jwt.sign({...params}, scret, { expiresIn: 3600 });
+    const token = jwt.sign({...params}, scret, { expiresIn: 86400 });
+    // res.setHeader('Set-Cookie', `token = ${token}`);
+    res.cookie('token', token, { path: '/', secure: false, signed: false });
+    res.cookie('nickname', params.nickname, { path: '/', secure: false, signed: false });
     const data = {
         token: token,
         mes: '登陆成功'

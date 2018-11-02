@@ -7,10 +7,10 @@ const myCrypto = require('../common/crypto');
 
 /**
  * 用户注册
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req  请求头
+ * @param {*} res  响应头
  */
-const register = async function (req, res) {
+const register = async (req, res) => {
     let params = {
         username: '',
         nickname: '',

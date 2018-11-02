@@ -5,6 +5,13 @@ const resFun = function (res, code, data) {
     })
 }
 
+const resSuc = function (res, data) {
+    res.json({
+        code: 0,
+        data: data
+    })
+}
+
 const resErr = function (res) {
     res.json({
         code: 12000,
@@ -21,5 +28,6 @@ const resEmp = function (res) {
 module.exports = {
     resFun,
     resErr,
-    resEmp
+    resEmp,
+    resSuc
 };
