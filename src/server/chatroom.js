@@ -5,9 +5,9 @@ const query = require('../../db/connect');
 /**
  * 
  * @param {number} limit  数量
- * @param {number} page  页码
+ * @param {number} page   页码
  * @param {string} field  排序字段
- * @param {string} sort  排序方式
+ * @param {string} sort   排序方式
  */
 const getArtic = async function ({ limit, page, field, sort }) {
     try {

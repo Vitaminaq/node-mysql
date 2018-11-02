@@ -9,6 +9,7 @@
   "author": "Vitaminaq",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.3.0",
     "mysql": "^2.16.0",

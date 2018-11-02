@@ -1,7 +1,10 @@
 'use strict';
 
-const { getArticDetail, getViewnum, saveView } = require('../server/detail');
-const { resEmp, resFun, resErr } = require('../common/response');
+const { 
+    getArticDetail,
+    clickArtic 
+} = require('../server/detail');
+const { resEmp, resFun, resErr, resSuc } = require('../common/response');
 const isEmpty = require('../common/isEmpty');
 
 /**
@@ -17,35 +20,40 @@ const getArticDetails = async function (req, res) {
     if (isempty) {
         return resEmp(res);
     } 
-    const r = await getArticDetail(params);
-    if (r === 1 || !r[0]) return resErr(res);
-    return resFun(res, 0, {...r[0]});
+    const nickname = req.headers.cookie.split(';')[1].split('=')[1];
+    const r = await getArticDetail({...params, nickname});
+    let isClick = true;
+    if (r === 1) return resErr(res);
+    if (!r.r2[0]) {
+        isClick = false;
+    }
+    return resSuc(res, {
+        ...r.r1[0],
+        isClick: isClick
+    });
 }
 
+
 /**
- * 浏览文章
+ * 点赞文章
  * @param {object} req  请求头 
  * @param {object} res  响应头
  */
-const saveViews = async function (req, res) {
+const clickArtics = async function (req, res) {
     const params = {
-        articId: req.body.id | ''
+        articId: req.body.id | '',
+        creatAt: Date.now()
     }
     const isempty = isEmpty(params);
     if (isempty) {
         return resEmp(res);
-    }   
-    const r = await getViewnum(params);
-    if (r === 1 || !r[0]) return resErr(res);
-    let result;
-    if (r[0]) {
-        result = await saveView({viewnum: ++r[0].viewnum, articId: params.articId});
     }
-    if (result === 1) return resErr(res);
-    return resFun(res, 0, '浏览成功');
+    const nickname = req.headers.cookie.split(';')[1].split('=')[1];
+    const r = await clickArtic({...params, nickname});
+    if (r === 1 || !r[0]) return resErr(res);
 }
 
 module.exports = {
     getArticDetails,
-    saveViews
+    clickArtics
 };
