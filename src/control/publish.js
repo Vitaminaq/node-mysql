@@ -10,7 +10,7 @@ const { resEmp, resFun, resErr } = require('../common/response');
  */
 const publish = async function (req, res) {
     const params = {
-        nickname: '',
+        nickname: req.cookies.nickname,
         title: '',
         msg: '',
         viewnum: 0,

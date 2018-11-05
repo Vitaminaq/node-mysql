@@ -20,7 +20,7 @@ const getArticDetails = async function (req, res) {
     if (isempty) {
         return resEmp(res);
     } 
-    const nickname = req.headers.cookie.split(';')[1].split('=')[1];
+    const nickname = req.cookies.nickname;
     const r = await getArticDetail({...params, nickname});
     let isClick = true;
     if (r === 1) return resErr(res);
