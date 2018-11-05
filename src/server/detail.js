@@ -100,11 +100,11 @@ const clickComment = async function (params) {
             return 0;
         } else {
             await query(
-                `insert into artic_click set ?`, params
+                `insert into comment_click set ?`, params
             );
-            await query(
-                `update artic set clicknum = clicknum + 1 where articId = ?`, [params.articId]
-            )
+            // await query(
+            //     `update artic set clicknum = clicknum + 1 where articId = ?`, [params.articId]
+            // )
             return 0;
         }
     } catch (e) {

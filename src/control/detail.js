@@ -93,7 +93,7 @@ const commentArtics = async (req, res) => {
 const clickComments = async function (req, res) {
     const params = {
         articId: req.body.id | '',
-        ccId: req.body.ccId | '',
+        commentId: req.body.commentId | '',
         creatAt: Date.now()
     }
     const isempty = isEmpty(params);
