@@ -58,16 +58,6 @@ const query = function (sql, params) {
     });
 }
 
-<<<<<<< HEAD
-// const init = async () => {
-//     await query(CreateSchema, {});
-//     pool.end();
-//     pool = mysql.createPool(options);
-//     console.log(`数据库 ${pool.config.connectionConfig.database} 初始化成功`);
-// }
-// try {
-//     init();
-=======
 /**
  * 初始化数据库，不建议开启，实际操作，可能会更改用户数据，
  * 可以玩玩
@@ -83,7 +73,6 @@ const query = function (sql, params) {
 
 // try {
 //     // init();
->>>>>>> 0c136a149d81fca1a711f9d556104d1be2e113e3
 // } catch (e) {
 //     console.log(`数据库初始化失败${e}`);
 // }

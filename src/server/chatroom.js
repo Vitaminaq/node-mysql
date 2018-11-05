@@ -22,30 +22,13 @@ const getArtic = async function ({ limit, page, field, sort }) {
 }
 
 /**
- * 查找浏览前的浏览数
+ * 保存浏览数
  * @param {number} params.articId  文章id
  */
-const getViewnum = async function (params) {
+const saveView = async function (params) {
     try {
         const r = await query(
-            `select viewnum from artic where ?`, params
-        );
-        return r;
-    } catch (e) {
-        console.log(`错误为${e}`);
-        return 1;
-    }
-}
-
-/**
- * 保存浏览数
- * @param {number} viewnum  文章浏览量
- * @param {number} articId  文章id
- */
-const saveView = async function ({ viewnum, articId }) {
-    try {
-        const r = await query(
-            `update artic set viewnum = ? WHERE articId = ? `, [viewnum, articId]
+            `update artic set viewnum = viewnum + 1 WHERE ?`, params
         );
         return r;
     } catch (e) {
@@ -56,6 +39,5 @@ const saveView = async function ({ viewnum, articId }) {
 
 module.exports = {
     getArtic,
-    getViewnum,
     saveView
 };

@@ -18,7 +18,7 @@ app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Content-Type, authorization, Cache-Control, withCredentials");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Max-Age', 60);
+    // res.header('Access-Control-Max-Age', 60);
     res.setHeader("Content-Type", "text/html");
     next();
 });

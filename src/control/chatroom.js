@@ -1,6 +1,6 @@
 'use strict';
 
-const { getArtic, getViewnum, saveView } = require('../server/chatroom');
+const { getArtic, saveView } = require('../server/chatroom');
 const { resEmp, resFun, resErr } = require('../common/response');
 const isEmpty = require('../common/isEmpty');
 
@@ -40,13 +40,8 @@ const saveViews = async function (req, res) {
     if (isempty) {
         return resEmp(res);
     }   
-    const r = await getViewnum(params);
-    if (r === 1 || !r[0]) return resErr(res);
-    let result;
-    if (r[0]) {
-        result = await saveView({viewnum: ++r[0].viewnum, articId: params.articId});
-    }
-    if (result === 1) return resErr(res);
+    const r = await saveView(params);
+    if (r === 1) return resErr(res);
     return resFun(res, 0, '浏览成功');
 }
 
