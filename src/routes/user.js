@@ -4,7 +4,12 @@ const register = require('../control/register');
 const login = require('../control/login');
 const reset = require('../control/reset');
 const { getArtics, saveViews }= require('../control/chatroom');
-const { getArticDetails, clickArtics }= require('../control/detail');
+const { 
+    getArticDetails,
+    clickArtics,
+    commentArtics,
+    clickComments
+}= require('../control/detail');
 const publish = require('../control/publish');
 const decodeToken = require('../common/token');
 
@@ -48,6 +53,16 @@ const routers = (router) => {
      * 点赞文章
      */
     router.post('/agree/artic', decodeToken, clickArtics);
+
+    /**
+     * 评论文章
+     */
+    router.post('/comment', decodeToken, commentArtics);
+
+    /**
+     * 点赞评论
+     */
+    router.post('/agree/comment', decodeToken, clickComments);
     return router;
 }
 
