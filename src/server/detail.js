@@ -19,9 +19,28 @@ const getArticDetail = async function ({ articId, nickname, field, sort }) {
             [articId, nickname]
         );
         const r3 = await query(
-            `select commentId, nickname, msg, creatAt from comment where articId = ? order by ${field} ${sort}`, [articId]
-        )
+            `select commentId, nickname, msg, creatAt, clicknum from comment where articId = ?
+            order by ${field} ${sort}`, [articId]
+        );
         return {r1, r2, r3};
+    } catch (e) {
+        console.log(`错误为${e}`);
+        return 1;
+    }
+}
+
+/**
+ * 当前用户是否点赞该评论
+ * @param {number} nickname   昵称
+ * @param {string} commentId  评论号
+ */
+const getIsClickComment = async function ({ nickname, commentId }) {
+    try {
+        const r = await query(
+            `select * from comment_click where nickname = ? and commentId = ?`,
+            [nickname, commentId]
+        )
+        return r;
     } catch (e) {
         console.log(`错误为${e}`);
         return 1;
@@ -88,23 +107,26 @@ const commentArtic = async function (params) {
 const clickComment = async function (params) {
     try {
         const r1 = await query(
-            `select ccId from comment_click where nickname = ?`, [params.nickname]
+            `select ccId from comment_click where nickname = ? and nickname = ?`,
+            [params.nickname, params.commentId]
         )
         if (r1[0]) {
             await query(
                 `delete from comment_click where nickname = ?`, [params.nickname]
             );
             await query(
-                `update artic set commentnum = commentnum - 1 where articId = ?`, [params.articId]
+                `update comment set clicknum = clicknum - 1 where commentId = ?`,
+                [params.commentId]
             )
             return 0;
         } else {
             await query(
                 `insert into comment_click set ?`, params
             );
-            // await query(
-            //     `update artic set clicknum = clicknum + 1 where articId = ?`, [params.articId]
-            // )
+            await query(
+                `update comment set clicknum = clicknum + 1 where commentId = ?`,
+                [params.commentId]
+            )
             return 0;
         }
     } catch (e) {
@@ -117,5 +139,6 @@ module.exports = {
     getArticDetail,
     clickArtic,
     commentArtic,
-    clickComment
+    clickComment,
+    getIsClickComment
 };

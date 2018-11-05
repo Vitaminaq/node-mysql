@@ -6,8 +6,8 @@ module.exports = `CREATE TABLE IF NOT EXISTS cfsw.usermessage (
     headimg VARCHAR(45) NOT NULL,
     password VARCHAR(45) NOT NULL,
     age INT(5) NOT NULL,
-    creatAt TIMESTAMP NOT NULL,
-    updateAt TIMESTAMP,
+    creatAt VARCHAR(20) NOT NULL,
+    updateAt VARCHAR(20),
     PRIMARY KEY (uid),
     INDEX index2 (uid ASC)
 )`;

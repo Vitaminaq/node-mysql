@@ -3,6 +3,7 @@ module.exports = `CREATE TABLE cfsw.comment (
     articId INT(12) NOT NULL,
     nickname VARCHAR(12) NOT NULL,
     msg VARCHAR(300) NOT NULL,
+    clicknum INT(12) NOT NULL,
     creatAt VARCHAR(20) NOT NULL,
     PRIMARY KEY (commentId),
     INDEX index2 (commentId ASC)

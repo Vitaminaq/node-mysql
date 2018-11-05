@@ -1,10 +1,11 @@
 'use strict';
 
-const { 
+const {
     getArticDetail,
     clickArtic,
     commentArtic,
-    clickComment
+    clickComment,
+    getIsClickComment
 } = require('../server/detail');
 const { resEmp, resFun, resErr, resSuc } = require('../common/response');
 const isEmpty = require('../common/isEmpty');
@@ -23,18 +24,25 @@ const getArticDetails = async function (req, res) {
     const isempty = isEmpty(params);
     if (isempty) {
         return resEmp(res);
-    } 
+    }
     const nickname = req.cookies.nickname;
-    const r = await getArticDetail({...params, nickname});
+    const r = await getArticDetail({ ...params, nickname });
     let isClick = true;
-    let commentList = null;
+    let commentList = [];
     if (r === 1) return resErr(res);
     if (!r.r2[0]) {
         isClick = false;
     }
-    if (r.r3[0]) {
-        commentList = [...r.r3];
-    }
+    await Promise.all(r.r3.map(async (i) => {
+        const result = await getIsClickComment({ nickname, commentId: i.commentId });
+        if (result === 1) return resErr(res);
+        if (result[0]) {
+            i.isClickComment = true;
+        } else {
+            i.isClickComment = false;
+        }
+        commentList.push(i);
+    }));
     return resSuc(res, {
         ...r.r1[0],
         isClick,
@@ -58,7 +66,7 @@ const clickArtics = async function (req, res) {
         return resEmp(res);
     }
     const nickname = req.cookies.nickname;
-    const r = await clickArtic({...params, nickname});
+    const r = await clickArtic({ ...params, nickname });
     if (r === 1) return resErr(res);
     return resSuc(res, 'ok');
 }
@@ -71,11 +79,13 @@ const clickArtics = async function (req, res) {
 const commentArtics = async (req, res) => {
     const nickname = req.cookies.nickname;
     const params = {
-        articId: req.body.id | '',
-        nickname: nickname | '',
-        msg: req.body.msg | '',
+        articId: 0,
+        nickname: nickname,
+        msg: '',
+        clicknum: 0,
         creatAt: Date.now()
     }
+    Object.assign(params, req.body);
     const isempty = isEmpty(params);
     if (isempty) {
         return resEmp(res);
@@ -101,7 +111,7 @@ const clickComments = async function (req, res) {
         return resEmp(res);
     }
     const nickname = req.cookies.nickname;
-    const r = await clickComment({...params, nickname});
+    const r = await clickComment({ ...params, nickname });
     if (r === 1) return resErr(res);
     return resSuc(res, 'ok');
 }

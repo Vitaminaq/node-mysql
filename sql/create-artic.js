@@ -6,8 +6,8 @@ module.exports = `CREATE TABLE IF NOT EXISTS cfsw.artic (
     viewnum INT(12) NOT NULL,
     clicknum INT(12) NOT NULL,
     commentnum INT(12) NOT NULL,
-    creatAt TIMESTAMP NOT NULL,
-    updateAt TIMESTAMP,
+    creatAt VARCHAR(20) NOT NULL,
+    updateAt VARCHAR(20),
     PRIMARY KEY (articId),
     INDEX index2 (articId ASC)
 )`;
