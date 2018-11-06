@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cookie = require('cookie-parser');
+const setHead = require('./src/middleware/white-list');
 
 const port = process.env.PORT || 3005; // 设置端口号：3005
 app.listen(port); // 监听 port[3000]端口
@@ -13,14 +14,6 @@ const router = express.Router();
 const user = require('./src/routes/user');
 
 app.use(cookie());
-app.all('*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://127.0.0.1:8088");
-    res.header("Access-Control-Allow-Headers", "Content-Type, authorization, Cache-Control");
-    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Max-Age', 60);
-    res.setHeader("Content-Type", "text/html");
-    next();
-});
+app.all('*', setHead); //设置白名单,等一些请求头
 
 app.use('/api/user', user(router));

@@ -28,12 +28,11 @@ const getArticDetails = async function (req, res) {
     const nickname = req.cookies.nickname;
     const r = await getArticDetail({ ...params, nickname });
     let isClick = true;
-    let commentList = [];
     if (r === 1) return resErr(res);
     if (!r.r2[0]) {
         isClick = false;
     }
-    await Promise.all(r.r3.map(async (i) => {
+    const commentList = await Promise.all(r.r3.map(async (i) => {
         const result = await getIsClickComment({ nickname, commentId: i.commentId });
         if (result === 1) return resErr(res);
         if (result[0]) {
@@ -41,7 +40,7 @@ const getArticDetails = async function (req, res) {
         } else {
             i.isClickComment = false;
         }
-        commentList.push(i);
+        return i;
     }));
     return resSuc(res, {
         ...r.r1[0],

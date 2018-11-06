@@ -49,8 +49,8 @@ const getIsClickComment = async function ({ nickname, commentId }) {
 
 /**
  * 点赞文章
- * @param {number} articId   文章id
- * @param {number} nickname  昵称
+ * @param {number} params.articId   文章id
+ * @param {number} params.nickname  昵称
  */
 const clickArtic = async function (params) {
     try {
@@ -80,6 +80,23 @@ const clickArtic = async function (params) {
     }
 }
 
+// /**
+//  * 获取评论
+//  * @param {number} articId   文章id
+//  * @param {number} nickname  昵称
+//  */
+// const clickArtic = async function (articId) {
+//     try {
+//         const r1 = await query(
+//             `select * from artic_click where nickname = ?`, [params.nickname]
+//         )
+//         return r;
+//     } catch (e) {
+//         console.log(`错误为${e}`);
+//         return 1;
+//     }
+// }
+
 /**
  * 发表评论
  * @param {number} articId   文章id
@@ -89,9 +106,12 @@ const clickArtic = async function (params) {
  */
 const commentArtic = async function (params) {
     try {
-        const r = await query(
+        await query(
             `insert into comment set ?`, params
         )
+        const r = query(
+            `update artic set commentnum = commentnum + 1 where articId = ?`, [params.articId]
+        ) 
         return r;
     } catch (e) {
         console.log(`错误为${e}`);
@@ -102,12 +122,12 @@ const commentArtic = async function (params) {
 /**
  * 点赞评论
  * @param {number} commentId   文章id
- * @param {number} nickname  昵称
+ * @param {number} nickname    昵称
  */
 const clickComment = async function (params) {
     try {
         const r1 = await query(
-            `select ccId from comment_click where nickname = ? and nickname = ?`,
+            `select ccId from comment_click where nickname = ? and commentId = ?`,
             [params.nickname, params.commentId]
         )
         if (r1[0]) {
