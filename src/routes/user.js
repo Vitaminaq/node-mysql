@@ -32,7 +32,7 @@ const routers = (router) => {
     /**
      * 获取文章
      */
-    router.get('/chatroom', decodeToken, getArtics);
+    router.get('/chatroom', getArtics);
 
     /**
      * 浏览文章
