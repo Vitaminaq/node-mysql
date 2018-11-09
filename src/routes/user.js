@@ -37,7 +37,7 @@ const routers = (router) => {
     /**
      * 浏览文章
      */
-    router.post('/view', decodeToken, saveViews);
+    router.post('/view', saveViews);
 
     /**
      * 发表文章
@@ -47,7 +47,7 @@ const routers = (router) => {
     /**
      * 获取文章详情
      */
-    router.post('/detail', decodeToken, getArticDetails);
+    router.post('/detail', getArticDetails);
 
     /**
      * 点赞文章

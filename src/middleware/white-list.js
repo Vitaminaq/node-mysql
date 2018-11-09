@@ -11,6 +11,10 @@ const whiteList = function(req, res, next) {
     // } else {
     //     return;
     // }
+    console.log(req.method, 'dfffffffffffffffffff');
+    if (req.method === 'OPTIONS') {
+        return next();
+    }
     next();
 };
 
