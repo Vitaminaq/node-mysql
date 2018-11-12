@@ -1,13 +1,10 @@
 const express = require('express');
 const app = express();
-const http = require('http');
 const path = require('path');
 const cookie = require('cookie-parser');
 const setHead = require('./src/middleware/white-list');
 
-// const server = http.createServer(app);
 const port = process.env.PORT || 3005; // 设置端口号：3005
-// server.listen(`3005`, '0.0.0.0'); // 监听 port[3000]端口
 app.listen(port);
 console.log('start on port' + port);
 
@@ -25,5 +22,10 @@ app.all('*', setHead); //设置白名单,等一些请求头
 
 app.use('/api/user', user(router));
 
-console.log(path.join(__dirname, '/src/public'));
-app.use('/static', express.static(path.join(__dirname, '/src/public')));
+// 设置静态文件路由
+app.use('/static', (req, res, next) => {
+    res.setHeader("Content-Type", "image/jpeg");
+    next();
+}, express.static(
+    path.join(__dirname, '/src/public')
+));
