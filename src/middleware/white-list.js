@@ -7,11 +7,10 @@ const whiteList = function(req, res, next) {
         res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
         res.header('Access-Control-Allow-Credentials', 'true');
         res.header('Access-Control-Max-Age', 60);
-        res.setHeader("Content-Type", "text/html");
+        res.setHeader("Content-Type", ["text/html", "image/jpeg"]);
     // } else {
     //     return;
     // }
-    console.log(req.method, 'dfffffffffffffffffff');
     if (req.method === 'OPTIONS') {
         return next();
     }

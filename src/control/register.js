@@ -4,6 +4,7 @@ const { isExitNickname, userRegister } = require('../server/register');
 const isEmpty = require('../common/isEmpty');
 const { resEmp, resFun, resErr } = require('../common/response');
 const myCrypto = require('../common/crypto');
+const saveHeaderImg = require('../common/fs');
 
 /**
  * 用户注册
@@ -15,7 +16,7 @@ const register = async (req, res) => {
         username: '',
         nickname: '',
         sex: '',
-        headimg: '1',
+        headimg: '',
         password: '',
         age: '',
         creatAt: Date.now()
@@ -25,14 +26,19 @@ const register = async (req, res) => {
     if (isempty) {
         return resEmp(res);
     }
+    const imgR = await saveHeaderImg(params.headimg, params.nickname);
+       if (imgR !== 'ok') return resFun(res, 10004, '上传头像失败');
     params.password = myCrypto(params.password);
     let result;
     const r = await isExitNickname(params.nickname);
     if (r === 1) return resErr(res);
     if (!r[0]) {
+       const imgR = await saveHeaderImg(params.headimg, params.nickname);
+       if (imgR !== 'ok') return resFun(res, 10004, '上传头像失败');
+    //    params.headimg = '';
        result = await userRegister(params);
        if (result === 1) return resErr(res);
-       return resFun(res, 0, '注册成功'); 
+       return resFun(res, 0, '注册成功');
     } else {
        result = '此昵称已存在'
        return resFun(res, 10002, result);
