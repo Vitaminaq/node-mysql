@@ -26,8 +26,6 @@ const register = async (req, res) => {
     if (isempty) {
         return resEmp(res);
     }
-    const imgR = await saveHeaderImg(params.headimg, params.nickname);
-       if (imgR !== 'ok') return resFun(res, 10004, '上传头像失败');
     params.password = myCrypto(params.password);
     let result;
     const r = await isExitNickname(params.nickname);
@@ -35,7 +33,8 @@ const register = async (req, res) => {
     if (!r[0]) {
        const imgR = await saveHeaderImg(params.headimg, params.nickname);
        if (imgR !== 'ok') return resFun(res, 10004, '上传头像失败');
-    //    params.headimg = '';
+       params.headimg = `/static/images/${params.nickname}.jpg`;
+       console.log(params.headimg)
        result = await userRegister(params);
        if (result === 1) return resErr(res);
        return resFun(res, 0, '注册成功');

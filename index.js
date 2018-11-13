@@ -8,9 +8,8 @@ const port = process.env.PORT || 3005; // 设置端口号：3005
 app.listen(port);
 console.log('start on port' + port);
 
-app.json(limit, "2mb");
 const bodyParser = require('body-parser');
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: "20mb"}));
 
 const router = express.Router();
 const user = require('./src/routes/user');

@@ -3,7 +3,6 @@
 const query = require('../../db/connect');
 
 /**
- * 
  * @param {number} limit  数量
  * @param {number} page   页码
  * @param {string} field  排序字段
@@ -12,7 +11,9 @@ const query = require('../../db/connect');
 const getArtic = async function ({ limit, page, field, sort }) {
     try {
         const r = await query(
-            `select * from artic order by ${field} ${sort} limit ${page * limit}, ${limit}`, {}
+            `select a.*, b.headimg from artic as a, usermessage as b where 
+            a.nickname=b.nickname order by ${field} ${sort} limit ${page * limit}
+            , ${limit}`, {}
         );
         return r;
     } catch (e) {
