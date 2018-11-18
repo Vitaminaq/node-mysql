@@ -1,8 +1,7 @@
 const fs = require('fs');
 
-const saveHeaderImg = (data, nickname) => {
+const saveHeaderImg = (data, nickname, type) => {
     return new Promise((resolve, reject) => {
-        const type = data.split(';')[0].split('image/')[1];
         const path = `./src/public/images/${nickname}.${type}`;//从app.js级开始找--在我的项目工程里是这样的
         const base64 = data.replace(/^data:image\/\w+;base64,/, "");//去掉图片base64码前面部分data:image/png;base64
         const dataBuffer = new Buffer(base64, 'base64'); //把base64码转成buffer对象，

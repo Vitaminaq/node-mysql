@@ -31,9 +31,10 @@ const register = async (req, res) => {
     const r = await isExitNickname(params.nickname);
     if (r === 1) return resErr(res);
     if (!r[0]) {
-       const imgR = await saveHeaderImg(params.headimg, params.nickname);
+       const type = params.headimg.split(';')[0].split('image/')[1];
+       const imgR = await saveHeaderImg(params.headimg, params.nickname, type);
        if (imgR !== 'ok') return resFun(res, 10004, '上传头像失败');
-       params.headimg = `/static/images/${params.nickname}.jpg`;
+       params.headimg = `/static/images/${params.nickname}.${type}`;
        console.log(params.headimg)
        result = await userRegister(params);
        if (result === 1) return resErr(res);
