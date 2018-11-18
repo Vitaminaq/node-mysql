@@ -75,6 +75,7 @@ const query = function (sql, params) {
 //     await query(CreateArticClick);
 //     await query(CreateComment);
 //     await query(CreateCommentClick);
+//     console.log(`所有表格初始化成功`);
 // }
 
 // try {
