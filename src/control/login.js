@@ -30,6 +30,7 @@ const login = async function (req, res) {
     // res.setHeader('Set-Cookie', `token = ${token}`);
     res.cookie('token', token, { path: '/', secure: false, signed: false });
     res.cookie('nickname', params.nickname, { path: '/', secure: false, signed: false });
+    res.cookie('headimg', r[0].headimg, { path: '/', secure: false, signed: false });
     const data = {
         token: token,
         mes: '登陆成功'

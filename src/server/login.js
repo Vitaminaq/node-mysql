@@ -11,7 +11,7 @@ const userLogin = async function (params) {
     console.log(params);
     try {
         const r = await query(
-            'select uid from usermessage where nickname = ? and password = ?', [params.nickname, params.password]
+            'select uid, headimg from usermessage where nickname = ? and password = ?', [params.nickname, params.password]
         );
         return r;
     } catch (e) {
