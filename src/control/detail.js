@@ -19,7 +19,9 @@ const getArticDetails = async function (req, res) {
     const params = {
         articId: req.body.id | '',
         field: 'creatAt',
-        sort: 'desc'
+        sort: 'desc',
+        limit: 5,
+        page: 1,
     }
     const isempty = isEmpty(params);
     if (isempty) {
@@ -32,6 +34,7 @@ const getArticDetails = async function (req, res) {
     if (!r.r2[0]) {
         isClick = false;
     }
+    console.log(r.r3, 'dddddddddddddddddddddddddddd');
     const commentList = await Promise.all(r.r3.map(async (i) => {
         const result = await getIsClickComment({ nickname, commentId: i.commentId });
         if (result === 1) return resErr(res);
@@ -49,6 +52,40 @@ const getArticDetails = async function (req, res) {
     });
 }
 
+/**
+ * 获取文章评论
+ * @param {object} req  请求头 
+ * @param {object} res  响应头
+ */
+const getArticComments = async function (req, res) {
+    const params = {
+        articId: req.body.id | '',
+        field: 'creatAt',
+        sort: 'desc'
+    }
+    const isempty = isEmpty(params);
+    if (isempty) {
+        return resEmp(res);
+    }
+    const nickname = req.cookies.nickname;
+    const r = await getArticComment({ ...params });
+    if (r === 1) return resErr(res);
+    const commentList = await Promise.all(r.map(async (i) => {
+        const result = await getIsClickComment({ nickname, commentId: i.commentId });
+        if (result === 1) return resErr(res);
+        if (result[0]) {
+            i.isClickComment = true;
+        } else {
+            i.isClickComment = false;
+        }
+        return i;
+    }));
+    return resSuc(res, {
+        ...r.r1[0],
+        isClick,
+        commentList
+    });
+}
 
 /**
  * 点赞文章
@@ -117,6 +154,7 @@ const clickComments = async function (req, res) {
 
 module.exports = {
     getArticDetails,
+    getArticComments,
     clickArtics,
     commentArtics,
     clickComments
