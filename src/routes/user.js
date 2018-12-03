@@ -1,11 +1,12 @@
 'use strict';
 
 const register = require('../control/register');
-const login = require('../control/login');
+const { getUserHeaderImgs, login } = require('../control/login');
 const reset = require('../control/reset');
 const { getArtics, saveViews }= require('../control/chatroom');
 const { 
     getArticDetails,
+    getArticComments,
     clickArtics,
     commentArtics,
     clickComments
@@ -18,6 +19,11 @@ const routers = (router) => {
      * 用户注册
      */
     router.post('/register', register);
+
+    /**
+     * 获取用户头像
+     */
+    router.get('/header', getUserHeaderImgs);
 
     /**
      * 用户登录
@@ -48,6 +54,11 @@ const routers = (router) => {
      * 获取文章详情
      */
     router.post('/detail', getArticDetails);
+
+    /**
+     * 获取文章评论
+     */
+    router.get('/artic/comments', getArticComments);
 
     /**
      * 点赞文章

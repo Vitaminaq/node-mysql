@@ -22,6 +22,9 @@ const register = async (req, res) => {
         creatAt: Date.now()
     }
     Object.assign(params, req.body);
+    if (!(/(jpg|png|jpeg|gif)$/gi).test(params.headimg)) {
+        params.headimg = '/static/images/man.png';
+    }
     const isempty = isEmpty(params);
     if (isempty) {
         return resEmp(res);

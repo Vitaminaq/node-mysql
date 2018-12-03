@@ -9,7 +9,7 @@ const query = require('../../db/connect');
  * @param {string} field  排序字段
  * @param {string} sort   排序方式
  */
-const getArticDetail = async function ({ articId, nickname, field, sort }) {
+const getArticDetail = async function ({ articId, nickname, field, sort, page, limit }) {
     try {
         const r1 = await query(
             `select * from artic where articId = ?`, [articId]
@@ -20,9 +20,28 @@ const getArticDetail = async function ({ articId, nickname, field, sort }) {
         );
         const r3 = await query(
             `select commentId, nickname, msg, creatAt, clicknum from comment where articId = ?
-            order by ${field} ${sort}`, [articId]
+            order by ${field} ${sort} limit ${page * limit}`, [articId]
         );
         return {r1, r2, r3};
+    } catch (e) {
+        console.log(`错误为${e}`);
+        return 1;
+    }
+}
+
+/**
+ * 获取文章评论
+ * @param {number} articId   文章id
+ * @param {string} field  排序字段
+ * @param {string} sort   排序方式
+ */
+const getArticComment = async function ({ articId, field, sort }) {
+    try {
+        const r = await query(
+            `select commentId, nickname, msg, creatAt, clicknum from comment where articId = ?
+            order by ${field} ${sort}`, [articId]
+        );
+        return r;
     } catch (e) {
         console.log(`错误为${e}`);
         return 1;
@@ -79,23 +98,6 @@ const clickArtic = async function (params) {
         return 1;
     }
 }
-
-// /**
-//  * 获取评论
-//  * @param {number} articId   文章id
-//  * @param {number} nickname  昵称
-//  */
-// const clickArtic = async function (articId) {
-//     try {
-//         const r1 = await query(
-//             `select * from artic_click where nickname = ?`, [params.nickname]
-//         )
-//         return r;
-//     } catch (e) {
-//         console.log(`错误为${e}`);
-//         return 1;
-//     }
-// }
 
 /**
  * 发表评论
@@ -157,6 +159,7 @@ const clickComment = async function (params) {
 
 module.exports = {
     getArticDetail,
+    getArticComment,
     clickArtic,
     commentArtic,
     clickComment,
