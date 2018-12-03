@@ -22,8 +22,8 @@ const register = async (req, res) => {
         creatAt: Date.now()
     }
     Object.assign(params, req.body);
-    if (!(/(jpg|png|jpeg|gif)$/gi).test(params.headimg)) {
-        params.headimg = '/static/images/man.png';
+    if (!params.headimg) {
+        params.headimg = '1';
     }
     const isempty = isEmpty(params);
     if (isempty) {
@@ -34,17 +34,24 @@ const register = async (req, res) => {
     const r = await isExitNickname(params.nickname);
     if (r === 1) return resErr(res);
     if (!r[0]) {
-       const type = params.headimg.split(';')[0].split('image/')[1];
-       const imgR = await saveHeaderImg(params.headimg, params.nickname, type);
-       if (imgR !== 'ok') return resFun(res, 10004, '上传头像失败');
-       params.headimg = `/static/images/${params.nickname}.${type}`;
-       console.log(params.headimg)
-       result = await userRegister(params);
-       if (result === 1) return resErr(res);
-       return resFun(res, 0, '注册成功');
+        if (params.headimg === '1') {
+            if (params.sex === '男') {
+                params.headimg = '/static/images/man.png';
+            } else {
+                params.headimg = '/static/images/woman.png';
+            }
+        } else {
+            const type = params.headimg.split(';')[0].split('image/')[1];
+            const imgR = await saveHeaderImg(params.headimg, params.nickname, type);
+            if (imgR !== 'ok') return resFun(res, 10004, '上传头像失败');
+            params.headimg = `/static/images/${params.nickname}.${type}`;
+        }
+        result = await userRegister(params);
+        if (result === 1) return resErr(res);
+        return resFun(res, 0, '注册成功');
     } else {
-       result = '此昵称已存在'
-       return resFun(res, 10002, result);
+        result = '此昵称已存在'
+        return resFun(res, 10002, result);
     }
 }
 

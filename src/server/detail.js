@@ -19,7 +19,7 @@ const getArticDetail = async function ({ articId, nickname, field, sort, page, l
             [articId, nickname]
         );
         const r3 = await query(
-            `select commentId, nickname, msg, creatAt, clicknum from comment where articId = ?
+            `select commentId, nickname, headimg, msg, creatAt, clicknum from comment where articId = ?
             order by ${field} ${sort} limit ${page * limit}`, [articId]
         );
         return {r1, r2, r3};
