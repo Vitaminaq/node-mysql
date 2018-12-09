@@ -35,11 +35,11 @@ const getArticDetail = async function ({ articId, nickname, field, sort, page, l
  * @param {string} field  排序字段
  * @param {string} sort   排序方式
  */
-const getArticComment = async function ({ articId, field, sort }) {
+const getArticComment = async function ({ articId, field, sort, page, limit }) {
     try {
         const r = await query(
             `select commentId, nickname, msg, creatAt, clicknum from comment where articId = ?
-            order by ${field} ${sort}`, [articId]
+            order by ${field} ${sort} limit ${page * limit}`, [articId]
         );
         return r;
     } catch (e) {

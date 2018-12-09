@@ -21,7 +21,7 @@ const getArticDetails = async function (req, res) {
         field: 'creatAt',
         sort: 'desc',
         limit: 5,
-        page: 1,
+        page: 1
     };
     const isempty = isEmpty(params);
     if (isempty) {
@@ -60,7 +60,9 @@ const getArticComments = async function (req, res) {
     const params = {
         articId: req.body.id | '',
         field: 'creatAt',
-        sort: 'desc'
+        sort: 'desc',
+        limit: 5,
+        page: 1
     }
     const isempty = isEmpty(params);
     if (isempty) {
