@@ -10,12 +10,15 @@ const query = require('../../db/connect');
  */
 const getArtic = async function ({ limit, page, field, sort }) {
     try {
-        const r = await query(
+        const r1 = await query(
             `select a.*, b.headimg from artic as a, usermessage as b where 
-            a.nickname=b.nickname order by ${field} ${sort} limit ${page * limit}
+            a.uid=b.uid order by ${field} ${sort} limit ${page * limit}
             , ${limit}`, {}
         );
-        return r;
+        const r2 = await query(
+            `select count(*) FROM artic;`
+        );
+        return {r1, r2};
     } catch (e) {
         console.log(`错误为${e}`);
         return 1;

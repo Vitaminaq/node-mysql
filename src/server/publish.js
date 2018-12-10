@@ -3,7 +3,7 @@
 const query = require('../../db/connect');
 
 /**
- * 用户注册
+ * 发表文章
  * @param {string} params.nickname  昵称
  * @param {string} params.password  密码
  */

@@ -2,7 +2,7 @@
 
 const userPublish = require('../server/publish');
 const isEmpty = require('../common/isEmpty');
-const { resEmp, resFun, resErr } = require('../common/response');
+const { resEmp, resFun, resErr, resSuc } = require('../common/response');
 /**
  * 用户登录
  * @param {object} req  请求头 
@@ -10,7 +10,7 @@ const { resEmp, resFun, resErr } = require('../common/response');
  */
 const publish = async function (req, res) {
     const params = {
-        nickname: req.cookies.nickname,
+        uid: req.cookies.uid,
         title: '',
         msg: '',
         viewnum: 0,
@@ -23,9 +23,15 @@ const publish = async function (req, res) {
     if (isempty) {
         return resEmp(res);
     }
+    if (/^[0-9]*$/.test(params.uid)) {
+        return resFun(res, 10006);
+    }
+    if (String(params.title).length > 100 || String(params.msg).length > 6000) {
+        return resFun(res, 10010);
+    }
     const r = await userPublish(params);
     if (r === 1) return resErr(res);
-    return resFun(res, 0, '发表成功');
+    return resSuc(res, '发表成功');
 }
 
 module.exports = publish;

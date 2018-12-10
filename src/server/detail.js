@@ -9,20 +9,21 @@ const query = require('../../db/connect');
  * @param {string} field  排序字段
  * @param {string} sort   排序方式
  */
-const getArticDetail = async function ({ articId, nickname, field, sort, page, limit }) {
+const getArticDetail = async function ({ articId, uid, field, sort, page, limit }) {
     try {
         const r1 = await query(
-            `select * from artic where articId = ?`, [articId]
+            `select a.*, b.nickname, b.headimg, b.sex from artic as a, usermessage as b where articId = ? and
+            a.uid = b.uid`, [articId]
         );
         const r2 = await query(
-            `select * from artic_click where articId = ? and nickname = ?`,
-            [articId, nickname]
+            `select * from artic_click where articId = ? and uid = ?`,
+            [articId, uid]
         );
-        const r3 = await query(
-            `select commentId, nickname, headimg, msg, creatAt, clicknum from comment where articId = ?
-            order by ${field} ${sort} limit ${page * limit}`, [articId]
-        );
-        return {r1, r2, r3};
+        // const r3 = await query(
+        //     `select commentId, nickname, headimg, msg, creatAt, clicknum from comment where articId = ?
+        //     order by ${field} ${sort} limit ${page * limit}`, [articId]
+        // );
+        return {r1, r2};
     } catch (e) {
         console.log(`错误为${e}`);
         return 1;
