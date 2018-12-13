@@ -1,7 +1,7 @@
 'use strict';
 
 const { getArtic, saveView } = require('../server/chatroom');
-const { resEmp, resFun, resErr } = require('../common/response');
+const { resEmp, resFun, resErr, resSuc } = require('../common/response');
 const isEmpty = require('../common/isEmpty');
 
 /**
@@ -17,14 +17,18 @@ const getArtics = async function (req, res) {
         sort: 'desc'
     }
     Object.assign(params, req.query);
+    if (!/^[0-9]*$/.test(params.limit) || !/^[0-9]*$/.test(params.page)) {
+        return resFun(res, 10006);
+    }
     const r = await getArtic(params);
     if (r === 1) return resErr(res);
     const data = {
-        list: [...r],
+        list: [...r.r1],
         pageIndex: +params.page,
-        pageSize: +params.limit
+        pageSize: +params.limit,
+        total: +r.r2 | 0
     }
-    return resFun(res, 0, {...data});
+    return resSuc(res, {...data});
 }
 
 /**
@@ -39,10 +43,13 @@ const saveViews = async function (req, res) {
     const isempty = isEmpty(params);
     if (isempty) {
         return resEmp(res);
-    }   
+    }
+    if (!/^[0-9]*$/.test(Number(params.articId))) {
+        return resFun(res, 10006);
+    }
     const r = await saveView(params);
     if (r === 1) return resErr(res);
-    return resFun(res, 0, '浏览成功');
+    return resSuc(res, 'ok');
 }
 
 module.exports = {

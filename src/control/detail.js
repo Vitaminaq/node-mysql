@@ -20,35 +20,41 @@ const getArticDetails = async function (req, res) {
         articId: req.body.id | '',
         field: 'creatAt',
         sort: 'desc',
-        limit: 5,
-        page: 1,
+        limit: 6,
+        page: 1
     };
     const isempty = isEmpty(params);
     if (isempty) {
         return resEmp(res);
     }
-    const nickname = req.cookies.nickname;
-    const r = await getArticDetail({ ...params, nickname });
+    if (!/^[0-9]*$/.test(params.articId) ||
+        !/^[0-9]*$/.test(params.limit) ||
+        !/^[0-9]*$/.test(params.page)
+    ) {
+        return resFun(res, 10006);
+    }
+    const uid = req.cookies.uid;
+    const r = await getArticDetail({ ...params, uid });
     let isClick = true;
     if (r === 1) return resErr(res);
     if (!r.r3[0]) {
         isClick = false;
     }
-    const commentList = await Promise.all(r.r4.map(async (i) => {
-        const result = await getIsClickComment({ nickname, commentId: i.commentId });
-        if (result === 1) return resErr(res);
-        if (result[0]) {
-            i.isClickComment = true;
-        } else {
-            i.isClickComment = false;
-        }
-        return i;
-    }));
+    // const commentList = await Promise.all(r.r3.map(async (i) => {
+    //     const result = await getIsClickComment({ nickname, commentId: i.commentId });
+    //     if (result === 1) return resErr(res);
+    //     if (result[0]) {
+    //         i.isClickComment = true;
+    //     } else {
+    //         i.isClickComment = false;
+    //     }
+    //     return i;
+    // }));
     return resSuc(res, {
         ...r.r1[0],
         ...r.r2[0],
         isClick,
-        commentList
+        // commentList
     });
 }
 
@@ -61,7 +67,9 @@ const getArticComments = async function (req, res) {
     const params = {
         articId: req.body.id | '',
         field: 'creatAt',
-        sort: 'desc'
+        sort: 'desc',
+        limit: 5,
+        page: 1
     }
     const isempty = isEmpty(params);
     if (isempty) {
