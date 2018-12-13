@@ -31,10 +31,10 @@ const getArticDetails = async function (req, res) {
     const r = await getArticDetail({ ...params, nickname });
     let isClick = true;
     if (r === 1) return resErr(res);
-    if (!r.r2[0]) {
+    if (!r.r3[0]) {
         isClick = false;
     }
-    const commentList = await Promise.all(r.r3.map(async (i) => {
+    const commentList = await Promise.all(r.r4.map(async (i) => {
         const result = await getIsClickComment({ nickname, commentId: i.commentId });
         if (result === 1) return resErr(res);
         if (result[0]) {
@@ -46,6 +46,7 @@ const getArticDetails = async function (req, res) {
     }));
     return resSuc(res, {
         ...r.r1[0],
+        ...r.r2[0],
         isClick,
         commentList
     });

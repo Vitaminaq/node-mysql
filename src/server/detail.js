@@ -15,14 +15,17 @@ const getArticDetail = async function ({ articId, nickname, field, sort, page, l
             `select * from artic where articId = ?`, [articId]
         );
         const r2 = await query(
+            `select headimg from usermessage where nickname = '${r1[0].nickname}'`
+        )
+        const r3 = await query(
             `select * from artic_click where articId = ? and nickname = ?`,
             [articId, nickname]
         );
-        const r3 = await query(
+        const r4 = await query(
             `select commentId, nickname, headimg, msg, creatAt, clicknum from comment where articId = ?
             order by ${field} ${sort} limit ${page * limit}`, [articId]
         );
-        return {r1, r2, r3};
+        return {r1, r2, r3, r4};
     } catch (e) {
         console.log(`错误为${e}`);
         return 1;
