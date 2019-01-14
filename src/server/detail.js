@@ -15,15 +15,17 @@ const getArticDetail = async function ({ articId, uid, field, sort, page, limit 
             `select a.*, b.nickname, b.headimg, b.sex from artic as a, usermessage as b where articId = ? and
             a.uid = b.uid`, [articId]
         );
-        const r2 = await query(
-            `select * from artic_click where articId = ? and uid = ?`,
-            [articId, uid]
-        );
+        // console.log(uid, '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+        // if (!uid) return r1;
+        // const r2 = await query(
+        //     `select * from artic_click where articId = ? and uid = ?`,
+        //     [articId, uid]
+        // );
         // const r3 = await query(
         //     `select commentId, nickname, headimg, msg, creatAt, clicknum from comment where articId = ?
         //     order by ${field} ${sort} limit ${page * limit}`, [articId]
         // );
-        return {r1, r2};
+        return {r1};
     } catch (e) {
         console.log(`错误为${e}`);
         return 1;

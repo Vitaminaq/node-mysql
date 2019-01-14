@@ -23,7 +23,7 @@ const publish = async function (req, res) {
     if (isempty) {
         return resEmp(res);
     }
-    if (/^[0-9]*$/.test(params.uid)) {
+    if (!/^[0-9]*$/.test(params.uid)) {
         return resFun(res, 10006);
     }
     if (String(params.title).length > 100 || String(params.msg).length > 6000) {

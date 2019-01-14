@@ -46,7 +46,7 @@ const login = async function (req, res) {
     res.cookie('nickname', params.nickname, { path: '/', secure: false, signed: false });
     res.cookie('headimg', r[0].headimg, { path: '/', secure: false, signed: false });
     res.cookie('uid', r[0].uid, { path: '/', secure: false, signed: false });
-    res.cookie('sex', r[0].uid, { path: '/', secure: false, signed: false });
+    res.cookie('sex', r[0].sex, { path: '/', secure: false, signed: false });
     return resSuc(res, 'ok');
 }
 

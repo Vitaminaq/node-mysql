@@ -35,11 +35,11 @@ const getArticDetails = async function (req, res) {
     }
     const uid = req.cookies.uid;
     const r = await getArticDetail({ ...params, uid });
-    let isClick = true;
-    if (r === 1) return resErr(res);
-    if (!r.r3[0]) {
-        isClick = false;
-    }
+    // let isClick = true;
+    // if (r === 1) return resErr(res);
+    // if (!r.r3[0]) {
+    //     isClick = false;
+    // }
     // const commentList = await Promise.all(r.r3.map(async (i) => {
     //     const result = await getIsClickComment({ nickname, commentId: i.commentId });
     //     if (result === 1) return resErr(res);
@@ -52,8 +52,8 @@ const getArticDetails = async function (req, res) {
     // }));
     return resSuc(res, {
         ...r.r1[0],
-        ...r.r2[0],
-        isClick,
+        // ...r.r2[0],
+        // isClick,
         // commentList
     });
 }
