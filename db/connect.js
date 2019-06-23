@@ -1,11 +1,11 @@
 const mysql = require('mysql');
 const cfg = require('./DBconfig');
-// const CreateSchema = require('../sql/create-schema');
-// const CreateUsermessage = require('../sql/create-usermessage');
-// const CreateArtic = require('../sql/create-artic');
-// const CreateArticClick = require('../sql/create-artic_click');
-// const CreateComment = require('../sql/create-comment');
-// const CreateCommentClick = require('../sql/create-comment_click');
+const CreateSchema = require('../sql/create-schema');
+const CreateUsermessage = require('../sql/create-usermessage');
+const CreateArtic = require('../sql/create-artic');
+const CreateArticClick = require('../sql/create-artic_click');
+const CreateComment = require('../sql/create-comment');
+const CreateCommentClick = require('../sql/create-comment_click');
 
 /**
  * 创建连接池
@@ -15,7 +15,7 @@ const options = {
     user: cfg.USER,
     password: cfg.PASSWORD,
     port: cfg.PORT,
-    database: cfg.DATABASE // 开启自动生成数据库，请把这句注释
+    // database: cfg.DATABASE // 开启自动生成数据库，请把这句注释
 }
 let pool = mysql.createPool(options);
 
@@ -65,23 +65,23 @@ const query = function (sql, params) {
  * 初始化数据库，不建议开启，实际操作，可能会更改用户数据，
  * 自己本地可以玩玩
  */
-// const init = async () => {
-//     await query(CreateSchema);
-//     pool.end();
-//     pool = mysql.createPool(options);
-//     console.log(`数据库 ${pool.config.connectionConfig.database} 初始化成功`);
-//     await query(CreateUsermessage);
-//     await query(CreateArtic);
-//     await query(CreateArticClick);
-//     await query(CreateComment);
-//     await query(CreateCommentClick);
-//     console.log(`所有表格初始化成功`);
-// }
+const init = async () => {
+    await query(CreateSchema);
+    pool.end();
+    pool = mysql.createPool(options);
+    console.log(`数据库 ${pool.config.connectionConfig.database} 初始化成功`);
+    await query(CreateUsermessage);
+    await query(CreateArtic);
+    await query(CreateArticClick);
+    await query(CreateComment);
+    await query(CreateCommentClick);
+    console.log(`所有表格初始化成功`);
+}
 
-// try {
-//     init();
-// } catch (e) {
-//     console.log(`数据库初始化失败${e}`);
-// }
+try {
+    init();
+} catch (e) {
+    console.log(`数据库初始化失败${e}`);
+}
 
 module.exports = query;
