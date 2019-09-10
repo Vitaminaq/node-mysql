@@ -11,7 +11,7 @@ entry: {
    app: './src/xxxx.js // 如有变动，则.ts
 },
 resolve: {
-   extensions: ['.js', '.vue', '.json', '.ts'], // 这里加入.ts文件的解析,如果使用了tsx，一并加上
+   extensions: ['.ts','.js', '.vue', '.json',], // 这里加入.ts文件的解析,不必照搬，有啥加啥，经试验ts需放置在前，解决某种打包错误
 },
  module: {
     rules: [
