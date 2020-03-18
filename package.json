@@ -14,6 +14,7 @@
   "author": "Vitaminaq",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.3.0",

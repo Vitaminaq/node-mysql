@@ -6,5 +6,5 @@ module.exports = {
     USER : 'root',
     PASSWORD : 'Azyq19950905,.',
     PORT: '3306',
-    DATABASE : 'cfsw'
+    DATABASE : 'wxbs'
 };
