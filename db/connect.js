@@ -1,11 +1,7 @@
 const mysql = require('mysql');
 const cfg = require('./DBconfig');
 // const CreateSchema = require('../sql/create-schema');
-// const CreateUsermessage = require('../sql/create-usermessage');
-// const CreateArtic = require('../sql/create-artic');
-// const CreateArticClick = require('../sql/create-artic_click');
-// const CreateComment = require('../sql/create-comment');
-// const CreateCommentClick = require('../sql/create-comment_click');
+// const CreateWechatuser = require('../sql/create-wechatuser');
 
 /**
  * 创建连接池
@@ -70,11 +66,7 @@ const query = function (sql, params) {
 //     pool.end();
 //     pool = mysql.createPool(options);
 //     console.log(`数据库 ${pool.config.connectionConfig.database} 初始化成功`);
-//     await query(CreateUsermessage);
-//     await query(CreateArtic);
-//     await query(CreateArticClick);
-//     await query(CreateComment);
-//     await query(CreateCommentClick);
+//     await query(CreateWechatuser);
 //     console.log(`所有表格初始化成功`);
 // }
 
