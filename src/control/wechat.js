@@ -2,7 +2,7 @@
 const axios = require('axios');
 const isEmpty = require('../common/isEmpty');
 const { resEmp, resFun, resErr, resSuc } = require('../common/response');
-const { wechatRegister, isExitUser, updatePosition, getAll } = require('../server/wechat');
+const { createCp, joinCp, isJoinCp, wechatRegister, isExitUser, updatePosition, getCompanyAll, updateCid, getCid } = require('../server/wechat');
 const jwt =  require('jsonwebtoken');
 const scret = require('../../local-config/token-scret');
 
@@ -16,7 +16,7 @@ const localAxios = axios.create({
     }
 });
 localAxios.interceptors.request.use((config) => {
-    console.log('拦截器生效', config);
+    console.log('拦截器生效');
     return config;
 });
 localAxios.interceptors.response.use(
@@ -26,13 +26,43 @@ localAxios.interceptors.response.use(
 );
 
 /**
+ * 创建公司
+ */
+const createCompany = async (req, res) => {
+    const { name } = req.body;
+    const { uid } = req.headers;
+    const r = await createCp({ name, uid });
+    if (r === 1) return resErr(res);
+    const cid = r.insertId;
+    const r1 = await updateCid(+uid, +cid);
+    if (r1 === 1) return resErr(res);
+    return resSuc(res, {
+        cid
+    });
+}
+
+/**
+ * 加入公司
+ */
+const joinCompany = async (req, res) => {
+    const { cid, type } = req.body;
+    const { uid } = req.headers;
+    const r = await joinCp({ cid, type, uid });
+    if (r === 1) return resErr(res);
+    const r1 = await updateCid(+uid, +cid);
+    if (r1 === 1) return resErr(res);
+    return resSuc(res, {
+        cid
+    });
+}
+
+/**
  * 微信授权
  * @param {*} req  请求头
  * @param {*} res  响应头
  */
 const getUnion = async (req, res) => {
     const { code, avatarUrl, nickName } = req.body;
-    console.log(req.body, 'hhhhhhhhhhhhhhhhhhhh');
     const params = {
         appid: 'wx6a73315e44f61c38',
         secret: '022cc28a34d8de7df0cd255100c8970b',
@@ -48,8 +78,8 @@ const getUnion = async (req, res) => {
     // 授权不成功，则抛出异常
     if (!r.openid) return resFun(res, 30000);
     const er = await isExitUser(r.openid);
-    console.log(er[0].uid, 'yyyyqqqqqqqqqqqqqqqqqqqqq')
-    let realUid = er[0].uid;
+
+    let realUid = er[0] && er[0].uid || 0;
     if(!realUid) {
         const userInfo = {
             openid: r.openid,
@@ -59,18 +89,23 @@ const getUnion = async (req, res) => {
             username: '',
             creatAt: Date.now(),
             latitude: '',
-            longitude: ''
+            longitude: '',
+            cid: 0
         }
         const wr = await wechatRegister(userInfo);
+        console.log(wr, 'jjjjjjjjjjjjjjjjjjjjjjjjj');
         const ur = await isExitUser(r.openid);
-        realUid = ur[0].uid;
+        console.log(ur, 'wwwwwwwwwwwwwwwwwwwwwwwwwwww');
+        realUid = ur[0] && ur[0].uid || 0;
     }
+    // 查询有没有加入公司
+    const rjc = await isJoinCp(realUid);
+    // 创建token
     const token = jwt.sign({...params}, scret, { expiresIn: 86400 });
-    res.cookie('token', token, { path: '/', secure: false, signed: false });
-    res.cookie('uid', realUid, { path: '/', secure: false, signed: false });
     return resSuc(res, {
         token,
-        uid: realUid
+        uid: realUid,
+        cid: rjc[0] && rjc[0].id || 0
     });
 }
 
@@ -85,15 +120,19 @@ const savePosition = async (req, res) => {
 }
 
 /**
- * 查询所有信息
+ * 查询公司员工所有位置信息
  */
 const getAllMessage = async (req, res) => {
-    const r = await getAll();
-    console.log(r, 'jjjjjjjjjjjjjjjjjj');
+    const { uid } = req.headers;
+    const cr = await getCid(+uid || 0);
+    if (!cr || !cr[0]) return resErr(res);
+    const r = await getCompanyAll({ cid:  cr[0].cid });
     return resSuc(res, r);
 }
 
 module.exports = {
+    joinCompany,
+    createCompany,
     getUnion,
     savePosition,
     getAllMessage

@@ -50,7 +50,7 @@ const resSuc = function (res, data) {
 const resErr = function (res) {
     res.json({
         code: 12000,
-        data: codes[`${code}`]
+        data: codes[`12000`]
     })
 }
 

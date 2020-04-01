@@ -12,13 +12,11 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json({limit: "20mb"}));
 
 const router = express.Router();
-const user = require('./src/routes/user');
 const wechat = require('./src/routes/wechat');
 
 app.use(cookie());
 app.all('*', setHead); //设置白名单,等一些请求头
 
-app.use('/api/user', user(router));
 app.use('/api/wechat', wechat(router));
 
 // 设置静态文件路由
