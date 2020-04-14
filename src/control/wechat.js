@@ -2,7 +2,7 @@
 const axios = require('axios');
 const isEmpty = require('../common/isEmpty');
 const { resEmp, resFun, resErr, resSuc } = require('../common/response');
-const { createCp, joinCp, isJoinCp, wechatRegister, isExitUser, updatePosition, getCompanyAll, updateCid, getCid } = require('../server/wechat');
+const { createCp, joinCp, isJoinCp, wechatRegister, isExitUser, updatePosition, getCompanyAll, updateCid, getCid, userInfo, userType } = require('../server/wechat');
 const jwt =  require('jsonwebtoken');
 const scret = require('../../local-config/token-scret');
 
@@ -93,9 +93,7 @@ const getUnion = async (req, res) => {
             cid: 0
         }
         const wr = await wechatRegister(userInfo);
-        console.log(wr, 'jjjjjjjjjjjjjjjjjjjjjjjjj');
         const ur = await isExitUser(r.openid);
-        console.log(ur, 'wwwwwwwwwwwwwwwwwwwwwwwwwwww');
         realUid = ur[0] && ur[0].uid || 0;
     }
     // 查询有没有加入公司
@@ -120,6 +118,20 @@ const savePosition = async (req, res) => {
 }
 
 /**
+ * 获取用户信息
+ */
+const getUserInfo = async (req, res) => {
+    const { uid } = req.headers;
+    const cr = await userInfo(+uid || 0);
+    if (!cr || !cr[0]) return resErr(res);
+    // 查询用户身份信息
+    const r = await userType(+uid || 0);
+    console.log(r, 'mmmmmmmmmmmmmmmmmmmmmmmmmm');
+    if (!r || !r[0]) return resErr(res);
+    return resSuc(res, { ...cr[0], ...r[0]});
+}
+
+/**
  * 查询公司员工所有位置信息
  */
 const getAllMessage = async (req, res) => {
@@ -135,5 +147,6 @@ module.exports = {
     createCompany,
     getUnion,
     savePosition,
-    getAllMessage
+    getAllMessage,
+    getUserInfo
 };

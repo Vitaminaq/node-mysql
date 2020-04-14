@@ -109,6 +109,31 @@ const updatePosition = async function ({ uid, latitude, longitude }) {
     }
 }
 
+const userInfo = async function (uid) {
+    try {
+        const r = await query(
+            `select * from usermessage where uid = ?`, uid
+        );
+        return r;
+    } catch (e) {
+        console.log(`错误为${e}`);
+        return 1;
+    }
+}
+
+// 获取用户身份
+const userType = async function (uid) {
+    try {
+        const r = await query(
+            `select type from member where uid = ?`, uid
+        );
+        return r;
+    } catch (e) {
+        console.log(`错误为${e}`);
+        return 1;
+    }
+}
+
 const getCompanyAll = async function (cid) {
     try {
         const r = await query(
@@ -130,5 +155,7 @@ module.exports = {
     updatePosition,
     getCompanyAll,
     updateCid,
-    getCid
+    getCid,
+    userInfo,
+    userType
 };
