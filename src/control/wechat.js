@@ -2,7 +2,7 @@
 const axios = require('axios');
 const isEmpty = require('../common/isEmpty');
 const { resEmp, resFun, resErr, resSuc } = require('../common/response');
-const { createCp, joinCp, isJoinCp, wechatRegister, isExitUser, updatePosition, getCompanyAll, updateCid, getCid, userInfo, userType } = require('../server/wechat');
+const { createCp, joinCp, isJoinCp, wechatRegister, isExitUser, updatePosition, getCompanyAll, updateCid, getCid, userInfo, userType, getCompanyName } = require('../server/wechat');
 const jwt =  require('jsonwebtoken');
 const scret = require('../../local-config/token-scret');
 
@@ -126,9 +126,11 @@ const getUserInfo = async (req, res) => {
     if (!cr || !cr[0]) return resErr(res);
     // 查询用户身份信息
     const r = await userType(+uid || 0);
-    console.log(r, 'mmmmmmmmmmmmmmmmmmmmmmmmmm');
     if (!r || !r[0]) return resErr(res);
-    return resSuc(res, { ...cr[0], ...r[0]});
+    // 查询公司名称
+    const nr = await getCompanyName(cr[0].cid);
+    if (!nr || !nr[0]) return resErr(res);
+    return resSuc(res, { ...cr[0], ...r[0], cname: nr[0].name});
 }
 
 /**

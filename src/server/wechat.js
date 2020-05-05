@@ -146,6 +146,19 @@ const getCompanyAll = async function (cid) {
     }
 }
 
+// 查询公司名称
+const getCompanyName = async function (cid) {
+    try {
+        const r = await query(
+            `select name from company where id = ?`, cid
+        );
+        return r;
+    } catch (e) {
+        console.log(`错误为${e}`);
+        return 1;
+    }
+}
+
 module.exports = {
     isJoinCp,
     createCp,
@@ -157,5 +170,6 @@ module.exports = {
     updateCid,
     getCid,
     userInfo,
-    userType
+    userType,
+    getCompanyName
 };
