@@ -7,7 +7,7 @@ const query = require('../../db/connect');
  */
 const isJoinCp = async (uid) => {
     try {
-        return await query(`select id from member where uid = ?`, uid);
+        return query(`select id from member where uid = ?`, uid);
     } catch (e) {
         console.log(`错误为${e}`);
         return 1;
@@ -159,6 +159,22 @@ const getCompanyName = async function (cid) {
     }
 }
 
+// 退出公司
+const signoutCompany = async function (cid, uid) {
+    try {
+        const r = await query(
+            `DELETE FROM member WHERE cid=? & uid=?`, [cid, uid]
+        );
+        await query(
+            `update usermessage set cid = 0 where uid = ?`, uid
+        );
+        return r;
+    } catch (e) {
+        console.log(`错误为${e}`);
+        return 1;
+    }
+}
+
 module.exports = {
     isJoinCp,
     createCp,
@@ -171,5 +187,6 @@ module.exports = {
     getCid,
     userInfo,
     userType,
-    getCompanyName
+    getCompanyName,
+    signoutCompany
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-const { createCompany, joinCompany, getUnion, savePosition, getAllMessage, getUserInfo } = require('../control/wechat');
+const { createCompany, joinCompany, getUnion, savePosition, getAllMessage, getUserInfo, signOut } = require('../control/wechat');
 const decodeToken = require('../common/token');
 
 const routers = (router) => {
@@ -28,6 +28,10 @@ const routers = (router) => {
      * 获取公司成员位置
      */
     router.get('/user/info', decodeToken, getUserInfo);
+    /**
+     * 退出公司
+     */
+    router.post('/user/signout', decodeToken, signOut);
     return router;
 }
 

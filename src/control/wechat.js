@@ -2,7 +2,7 @@
 const axios = require('axios');
 const isEmpty = require('../common/isEmpty');
 const { resEmp, resFun, resErr, resSuc } = require('../common/response');
-const { createCp, joinCp, isJoinCp, wechatRegister, isExitUser, updatePosition, getCompanyAll, updateCid, getCid, userInfo, userType, getCompanyName } = require('../server/wechat');
+const { createCp, joinCp, isJoinCp, wechatRegister, isExitUser, updatePosition, getCompanyAll, updateCid, getCid, userInfo, userType, getCompanyName, signoutCompany } = require('../server/wechat');
 const jwt =  require('jsonwebtoken');
 const scret = require('../../local-config/token-scret');
 
@@ -47,7 +47,7 @@ const createCompany = async (req, res) => {
 const joinCompany = async (req, res) => {
     const { cid, type } = req.body;
     const { uid } = req.headers;
-    const r = await joinCp({ cid, type, uid });
+    const r = await joinCp({ cid: +cid, type, uid: +uid });
     if (r === 1) return resErr(res);
     const r1 = await updateCid(+uid, +cid);
     if (r1 === 1) return resErr(res);
@@ -98,12 +98,13 @@ const getUnion = async (req, res) => {
     }
     // 查询有没有加入公司
     const rjc = await isJoinCp(realUid);
+    console.log(rjc, 'llllllllllllllllllllllll');
     // 创建token
     const token = jwt.sign({...params}, scret, { expiresIn: 86400 });
     return resSuc(res, {
         token,
         uid: realUid,
-        cid: rjc[0] && rjc[0].id || 0
+        cid: rjc[0] && rjc[0].cid || 0
     });
 }
 
@@ -129,8 +130,7 @@ const getUserInfo = async (req, res) => {
     if (!r || !r[0]) return resErr(res);
     // 查询公司名称
     const nr = await getCompanyName(cr[0].cid);
-    if (!nr || !nr[0]) return resErr(res);
-    return resSuc(res, { ...cr[0], ...r[0], cname: nr[0].name});
+    return resSuc(res, { ...cr[0], ...r[0], cname: nr && nr.length && nr[0].name || ''});
 }
 
 /**
@@ -144,11 +144,18 @@ const getAllMessage = async (req, res) => {
     return resSuc(res, r);
 }
 
+const signOut = async (req, res) => {
+    const { uid, cid } = req.headers;
+    const r = await signoutCompany(+cid, +uid);
+    return resSuc(res, '退出成功');
+}
+
 module.exports = {
     joinCompany,
     createCompany,
     getUnion,
     savePosition,
     getAllMessage,
-    getUserInfo
+    getUserInfo,
+    signOut
 };
