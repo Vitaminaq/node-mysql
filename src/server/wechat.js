@@ -49,7 +49,7 @@ const joinCp = async (params) => {
         if(+u[0].uid === +params.uid) {
             // 更新用户身份
             await query(
-                `update member set type = 1`
+                `update member set type = 1 where uid = ?`, params.uid
             )
         }
         return r;
