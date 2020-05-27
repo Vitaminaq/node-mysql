@@ -98,7 +98,6 @@ const getUnion = async (req, res) => {
     }
     // 查询有没有加入公司
     const rjc = await isJoinCp(realUid);
-    console.log(rjc, 'llllllllllllllllllllllll');
     // 创建token
     const token = jwt.sign({...params}, scret, { expiresIn: 86400 });
     return resSuc(res, {

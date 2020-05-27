@@ -22,6 +22,10 @@ const createCp = async (params) => {
         const r = await query(
             `insert into company set ?`, params
         );
+        // 更新用户身份
+        await query(
+            `update member set type = 1`
+        )
         return r;
     } catch (e) {
         console.log(`错误为${e}`);
@@ -37,6 +41,17 @@ const joinCp = async (params) => {
         const r = await query(
             `insert into member set ?`, params
         );
+        // 查询该公司所属
+        const u = await query(
+            `select uid from company where id = ?`, params.cid
+        );
+        console.log(u, 'kkkkkkkkkkkkkkkkkkkkkk');
+        if(+u[0].uid === +params.uid) {
+            // 更新用户身份
+            await query(
+                `update member set type = 1`
+            )
+        }
         return r;
     } catch (e) {
         console.log(`错误为${e}`);
@@ -47,7 +62,7 @@ const joinCp = async (params) => {
 /**
  * 更新用户信息表cid
  */
-const updateCid = async (uid, cid) => {
+const updateCid = async (uid, cid, type) => {
     try {
         const r = await query(
             `update usermessage set cid = ? where uid = ?`, [cid, uid]
