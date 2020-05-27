@@ -51,6 +51,10 @@ const joinCp = async (params) => {
             await query(
                 `update member set type = 1 where uid = ?`, params.uid
             )
+        } else {
+            await query(
+                `update member set type = 2 where uid = ?`, params.uid
+            )
         }
         return r;
     } catch (e) {
