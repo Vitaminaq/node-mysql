@@ -140,7 +140,7 @@ const getAllMessage = async (req, res) => {
     const { uid } = req.headers;
     const cr = await getCid(+uid || 0);
     if (!cr || !cr[0]) return resErr(res);
-    const r = await getCompanyAll({ cid:  cr[0].cid });
+    const r = await getCompanyAll(cr[0].cid);
     return resSuc(res, r);
 }
 

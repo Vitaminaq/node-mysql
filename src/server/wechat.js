@@ -147,7 +147,7 @@ const getCompanyAll = async function (cid) {
 }
 
 // 查询公司名称
-const getCompanyName = async function ({ cid }) {
+const getCompanyName = async function (cid) {
     try {
         const r = await query(
             `select name from company where id = ?`, cid
