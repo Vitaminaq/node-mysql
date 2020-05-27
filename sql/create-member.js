@@ -11,7 +11,5 @@ module.exports = `CREATE TABLE IF NOT EXISTS wxbs.member (
     uid INT(12) NOT NULL,
     type INT(30) NOT NULL,
     PRIMARY KEY (id),
-    foreign key (cid) references company(id) on delete cascade on update cascade,
-    foreign key (uid) references usermessage(uid) on delete cascade on update cascade,
     INDEX index2 (id ASC)
 )`;
