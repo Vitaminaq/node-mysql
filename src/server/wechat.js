@@ -45,7 +45,6 @@ const joinCp = async (params) => {
         const u = await query(
             `select uid from company where id = ?`, params.cid
         );
-        console.log(u, 'kkkkkkkkkkkkkkkkkkkkkk');
         if(+u[0].uid === +params.uid) {
             // 更新用户身份
             await query(
