@@ -35,26 +35,28 @@ const getArticDetails = async function (req, res) {
     }
     const uid = req.cookies.uid;
     const r = await getArticDetail({ ...params, uid });
-    // let isClick = true;
-    // if (r === 1) return resErr(res);
-    // if (!r.r3[0]) {
-    //     isClick = false;
-    // }
-    // const commentList = await Promise.all(r.r3.map(async (i) => {
-    //     const result = await getIsClickComment({ nickname, commentId: i.commentId });
-    //     if (result === 1) return resErr(res);
-    //     if (result[0]) {
-    //         i.isClickComment = true;
-    //     } else {
-    //         i.isClickComment = false;
-    //     }
-    //     return i;
-    // }));
+    let isClick = true;
+    let commentList = [];
+    if (r === 1) return resErr(res);
+    if (!r.r3 || !r.r3.length) {
+        isClick = false;
+    } else {
+        commentList = await Promise.all(r.r3.map(async (i) => {
+            const result = await getIsClickComment({ nickname, commentId: i.commentId });
+            if (result === 1) return resErr(res);
+            if (result[0]) {
+                i.isClickComment = true;
+            } else {
+                i.isClickComment = false;
+            }
+            return i;
+        }));
+    }
     return resSuc(res, {
         ...r.r1[0],
-        // ...r.r2[0],
-        // isClick,
-        // commentList
+        ...r.r2 && r.r2[0],
+        isClick,
+        commentList
     });
 }
 
@@ -109,8 +111,8 @@ const clickArtics = async function (req, res) {
     if (isempty) {
         return resEmp(res);
     }
-    const nickname = req.cookies.nickname;
-    const r = await clickArtic({ ...params, nickname });
+    const uid = req.cookies.uid || 1;
+    const r = await clickArtic({ ...params, uid });
     if (r === 1) return resErr(res);
     return resSuc(res, 'ok');
 }

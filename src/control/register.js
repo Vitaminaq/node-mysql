@@ -32,7 +32,7 @@ const register = async (req, res) => {
     if (String(params.username).length > 6) {
         return resFun(res, 10007);
     }
-    if (String(params.nickname).length > 12 || String(params.nickname).length > 12) {
+    if (String(params.nickname).length > 12 || String(params.nickname).length < 1) {
        return resFun(res, 10005);
     }
     if (params.sex !== '男' && params.sex !== '女') {

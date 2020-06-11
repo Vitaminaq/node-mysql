@@ -1,7 +1,7 @@
 'use strict';
 
 const register = require('../control/register');
-const { getUserHeaderImgs, login } = require('../control/login');
+const { getUserHeaderImgs, login, onkeyLogin } = require('../control/login');
 const reset = require('../control/reset');
 const { getArtics, saveViews }= require('../control/chatroom');
 const { 
@@ -15,6 +15,10 @@ const publish = require('../control/publish');
 const decodeToken = require('../common/token');
 
 const routers = (router) => {
+    /**
+     * 一键登录注册
+     */
+    router.post('/login/onekey', onkeyLogin);
     /**
      * 用户注册
      */

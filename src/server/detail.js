@@ -77,11 +77,11 @@ const getIsClickComment = async function ({ nickname, commentId }) {
 const clickArtic = async function (params) {
     try {
         const r1 = await query(
-            `select acId from artic_click where nickname = ?`, [params.nickname]
+            `select acId from artic_click where uid = ?`, [params.uid]
         )
         if (r1[0]) {
             await query(
-                `delete from artic_click where nickname = ?`, [params.nickname]
+                `delete from artic_click where uid = ?`, [params.uid]
             );
             await query(
                 `update artic set clicknum = clicknum - 1 where articId = ?`, [params.articId]

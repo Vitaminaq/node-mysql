@@ -1,6 +1,6 @@
 'use strict';
 
-const { userLogin, getUserHeaderImg } = require('../server/login');
+const { userLogin, getUserHeaderImg, isExitPhone, userRegister } = require('../server/login');
 const isEmpty = require('../common/isEmpty');
 const { resEmp, resFun, resErr, resSuc } = require('../common/response');
 const myCrypto = require('../common/crypto');
@@ -50,7 +50,62 @@ const login = async function (req, res) {
     return resSuc(res, 'ok');
 }
 
+/**
+ * 用户手机号登录或注册
+ */
+const onkeyLogin = async (req, res) => {
+    let params = {
+        phone: '',
+        code: ''
+    }
+    Object.assign(params, req.body);
+    const isempty = isEmpty(params);
+    if (isempty) {
+        return resEmp(res);
+    }
+    // 查询手机号
+    const r = await isExitPhone(params.phone);
+    if (r === 1) return resErr(res);
+    // 用户存在 - 登录
+    if (r[0]) {
+        const token = jwt.sign({...params}, scret, { expiresIn: 86400 });
+        res.cookie('token', token, { path: '/', secure: false, signed: false });
+        res.cookie('uid', r[0].uid, { path: '/', secure: false, signed: false });
+        return resSuc(res, token);
+    } else {
+        const rParams = {
+            username: '无名网友',
+            nickname: '无名网友',
+            sex: '女',
+            headimg: '',
+            password: '',
+            age: '12',
+            creatAt: Date.now(),
+            ...params
+        }
+        if (!params.headimg) {
+            if (params.sex === '男') {
+                params.headimg = '/static/images/man.png';
+            } else {
+                params.headimg = '/static/images/woman.png';
+            }
+        } else {
+            const type = params.headimg.split(';')[0].split('image/')[1];
+            const imgR = await saveHeaderImg(params.headimg, params.nickname, type);
+            if (imgR !== 'ok') return resFun(res, 10004);
+            params.headimg = `/static/images/${params.nickname}.${type}`;
+        }
+        const result = await userRegister(rParams);
+        if (result === 1) return resErr(res);
+        const token = jwt.sign({...params}, scret, { expiresIn: 86400 });
+        res.cookie('token', token, { path: '/', secure: false, signed: false });
+        res.cookie('uid', result.insertId, { path: '/', secure: false, signed: false });
+        return resSuc(res, token);
+    }
+}
+
 module.exports = {
     getUserHeaderImgs,
-    login
+    login,
+    onkeyLogin
 };

@@ -3,7 +3,7 @@ const { resFun } = require('./response');
 const scret = require('../../local-config/token-scret');
 
 const decodeToke = function (req, res, next) {
-    const token = req.cookies.token;
+    const token = req.cookies.token || req.headers.authorization;
     if(!token) return resFun(res, 20000, '没有token');
     console.log(`当前时间 ${new Date()}`);
     console.log(`当前token值 ${req.cookies.token}`);
