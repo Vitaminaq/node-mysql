@@ -15,17 +15,12 @@ const getArticDetail = async function ({ articId, uid, field, sort, page, limit 
             `select a.*, b.nickname, b.headimg, b.sex from artic as a, usermessage as b where articId = ? and
             a.uid = b.uid`, [articId]
         );
-        // console.log(uid, '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-        // if (!uid) return r1;
-        // const r2 = await query(
-        //     `select * from artic_click where articId = ? and uid = ?`,
-        //     [articId, uid]
-        // );
-        // const r3 = await query(
-        //     `select commentId, nickname, headimg, msg, creatAt, clicknum from comment where articId = ?
-        //     order by ${field} ${sort} limit ${page * limit}`, [articId]
-        // );
-        return {r1};
+        if (!uid) return { r1 };
+        const r2 = await query(
+            `select * from artic_click where articId = ? and uid = ?`,
+            [articId, uid]
+        );
+        return {r1, r2};
     } catch (e) {
         console.log(`错误为${e}`);
         return 1;
@@ -41,7 +36,7 @@ const getArticDetail = async function ({ articId, uid, field, sort, page, limit 
 const getArticComment = async function ({ articId, field, sort, page, limit }) {
     try {
         const r = await query(
-            `select commentId, nickname, msg, creatAt, clicknum from comment where articId = ?
+            `select commentId, uid, msg, creatAt, clicknum from comment where articId = ?
             order by ${field} ${sort} limit ${page * limit}`, [articId]
         );
         return r;
@@ -56,11 +51,11 @@ const getArticComment = async function ({ articId, field, sort, page, limit }) {
  * @param {number} nickname   昵称
  * @param {string} commentId  评论号
  */
-const getIsClickComment = async function ({ nickname, commentId }) {
+const getIsClickComment = async function ({ uid, commentId }) {
     try {
         const r = await query(
-            `select * from comment_click where nickname = ? and commentId = ?`,
-            [nickname, commentId]
+            `select * from comment_click where uid = ? and commentId = ?`,
+            [uid, commentId]
         )
         return r;
     } catch (e) {

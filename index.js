@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const cookie = require('cookie-parser');
 const setHead = require('./src/middleware/white-list');
+const { getToken } = require('./src/common/token');
 
 const port = process.env.PORT || 3005; // 设置端口号：3005
 app.listen(port);
@@ -17,6 +18,7 @@ const user = require('./src/routes/user');
 app.use(cookie());
 app.all('*', setHead); //设置白名单,等一些请求头
 
+app.use('/api', getToken);
 app.use('/api/user', user(router));
 
 // 设置静态文件路由

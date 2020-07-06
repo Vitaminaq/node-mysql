@@ -12,7 +12,7 @@ const {
     clickComments
 }= require('../control/detail');
 const publish = require('../control/publish');
-const decodeToken = require('../common/token');
+const { decodeToken } = require('../common/token');
 
 const routers = (router) => {
     /**

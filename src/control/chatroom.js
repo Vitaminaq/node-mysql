@@ -1,6 +1,7 @@
 'use strict';
 
 const { getArtic, saveView } = require('../server/chatroom');
+const { isClickArtic } = require('../server/common');
 const { resEmp, resFun, resErr, resSuc } = require('../common/response');
 const isEmpty = require('../common/isEmpty');
 
@@ -22,8 +23,28 @@ const getArtics = async function (req, res) {
     }
     const r = await getArtic(params);
     if (r === 1) return resErr(res);
+    if (r.r1 && r.r1.length) {
+        r.r1 = r.r1.map(i => {
+            i.isClick = false;
+            return i;
+        })
+    }
+    const uid = +req.my.uid || 0;
+    if (uid && r.r1 && r.r1.length) {
+        const car = await Promise.all(r.r1.map((v, i) => {
+            return isClickArtic({ articId: v.articId, uid });
+        }));
+        car.forEach((c, i) => {
+            if (c === 1) return resErr(res);
+            if (c && c.length) {
+                r.r1[i].isClick = true;
+            } else {
+                r.r1[i].isClick = false; 
+            }
+        })
+    }
     const data = {
-        list: [...r.r1],
+        list: r.r1,
         pageIndex: +params.page,
         pageSize: +params.limit,
         total: +r.r2 | 0

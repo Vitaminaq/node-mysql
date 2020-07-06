@@ -8,7 +8,7 @@ const query = require('../../db/connect');
  * @param {string} field  排序字段
  * @param {string} sort   排序方式
  */
-const getArtic = async function ({ limit, page, field, sort }) {
+const getArtic = async function ({ limit, page, field, sort, uid }) {
     try {
         const r1 = await query(
             `select a.*, b.headimg from artic as a, usermessage as b where 

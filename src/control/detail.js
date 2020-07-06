@@ -5,7 +5,8 @@ const {
     clickArtic,
     commentArtic,
     clickComment,
-    getIsClickComment
+    getIsClickComment,
+    getArticComment
 } = require('../server/detail');
 const { resEmp, resFun, resErr, resSuc } = require('../common/response');
 const isEmpty = require('../common/isEmpty');
@@ -17,46 +18,26 @@ const isEmpty = require('../common/isEmpty');
  */
 const getArticDetails = async function (req, res) {
     const params = {
-        articId: req.body.id | '',
-        field: 'creatAt',
-        sort: 'desc',
-        limit: 6,
-        page: 1
+        articId: req.body.id | ''
     };
     const isempty = isEmpty(params);
     if (isempty) {
         return resEmp(res);
     }
-    if (!/^[0-9]*$/.test(params.articId) ||
-        !/^[0-9]*$/.test(params.limit) ||
-        !/^[0-9]*$/.test(params.page)
+    if (!/^[0-9]*$/.test(params.articId)
     ) {
         return resFun(res, 10006);
     }
-    const uid = req.cookies.uid;
+    const uid = +req.my.uid || 0;
     const r = await getArticDetail({ ...params, uid });
     let isClick = true;
-    let commentList = [];
     if (r === 1) return resErr(res);
-    if (!r.r3 || !r.r3.length) {
+    if (!r.r2 || !r.r2.length) {
         isClick = false;
-    } else {
-        commentList = await Promise.all(r.r3.map(async (i) => {
-            const result = await getIsClickComment({ nickname, commentId: i.commentId });
-            if (result === 1) return resErr(res);
-            if (result[0]) {
-                i.isClickComment = true;
-            } else {
-                i.isClickComment = false;
-            }
-            return i;
-        }));
     }
     return resSuc(res, {
         ...r.r1[0],
-        ...r.r2 && r.r2[0],
-        isClick,
-        commentList
+        isClick
     });
 }
 
@@ -67,7 +48,7 @@ const getArticDetails = async function (req, res) {
  */
 const getArticComments = async function (req, res) {
     const params = {
-        articId: req.body.id | '',
+        articId: req.query.id | '',
         field: 'creatAt',
         sort: 'desc',
         limit: 5,
@@ -77,11 +58,11 @@ const getArticComments = async function (req, res) {
     if (isempty) {
         return resEmp(res);
     }
-    const nickname = req.cookies.nickname;
+    const uid = +req.my.uid || 0;
     const r = await getArticComment({ ...params });
     if (r === 1) return resErr(res);
     const commentList = await Promise.all(r.map(async (i) => {
-        const result = await getIsClickComment({ nickname, commentId: i.commentId });
+        const result = await getIsClickComment({ uid, commentId: i.commentId });
         if (result === 1) return resErr(res);
         if (result[0]) {
             i.isClickComment = true;
@@ -91,9 +72,7 @@ const getArticComments = async function (req, res) {
         return i;
     }));
     return resSuc(res, {
-        ...r.r1[0],
-        isClick,
-        commentList
+        list: commentList
     });
 }
 
@@ -111,7 +90,7 @@ const clickArtics = async function (req, res) {
     if (isempty) {
         return resEmp(res);
     }
-    const uid = req.cookies.uid || 1;
+    const uid = req.my.uid || 0;
     const r = await clickArtic({ ...params, uid });
     if (r === 1) return resErr(res);
     return resSuc(res, 'ok');
@@ -123,12 +102,11 @@ const clickArtics = async function (req, res) {
  * @param {object} res  响应头
  */
 const commentArtics = async (req, res) => {
-    const nickname = req.cookies.nickname;
+    const uid = +req.my.uid || 0;
     const headimg = req.cookies.headimg;
     const params = {
         articId: 0,
-        nickname: nickname,
-        headimg: headimg,
+        uid,
         msg: '',
         clicknum: 0,
         creatAt: Date.now()

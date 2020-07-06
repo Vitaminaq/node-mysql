@@ -68,7 +68,7 @@ const onkeyLogin = async (req, res) => {
     if (r === 1) return resErr(res);
     // 用户存在 - 登录
     if (r[0]) {
-        const token = jwt.sign({...params}, scret, { expiresIn: 86400 });
+        const token = jwt.sign({uid: r[0].uid}, scret, { expiresIn: 86400 });
         res.cookie('token', token, { path: '/', secure: false, signed: false });
         res.cookie('uid', r[0].uid, { path: '/', secure: false, signed: false });
         return resSuc(res, token);
