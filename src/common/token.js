@@ -2,28 +2,35 @@ const jwt =  require('jsonwebtoken');
 const { resFun } = require('./response');
 const scret = require('../../local-config/token-scret');
 
-const getToken = (req, res, next) => {
+// 解密
+const deJwt = (token) => {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, scret, function (err, decode) {
+            if (err) resolve();
+            resolve(decode);
+        });
+    })
+}
+
+const getToken = async (req, res, next) => {
     if (req.method === 'OPTIONS') {
         return next();
     }
+    !req.my && (req.my = {});
     const token = req.cookies.token || req.headers.authorization || '';
-    req.my = {};
-    req.my.uid = 0;
-    if (!token || token === 'null') return next();
-    req.my = {};
-    req.my.token = token;
+    if (!token || token === 'null') {
+        req.my.uid = 0;
+        return next();
+    }
     console.log(`当前请求token ${token}`);
-    // 解密token
-    jwt.verify(token, scret, function (err, decode) {
-        if (err) return resFun(res, 20001, 'token信息错误');
-        if (decode.uid) {
-            req.my.uid = decode.uid
-        }
-    })
+    const r = await deJwt(token);
+    if (r && r.uid) {
+        req.my.uid = r.uid;
+    }
     return next();
 }
 
-const decodeToken = function (req, res, next) {
+const decodeToken = async (req, res, next) => {
     if (req.method === 'OPTIONS') {
         return next();
     }
@@ -31,14 +38,13 @@ const decodeToken = function (req, res, next) {
     if(!token || token === 'null') return resFun(res, 20000, '没有token');
     console.log(`当前时间 ${new Date()}`);
     console.log(`当前token值 ${token}`);
-    console.log(`当前用户 ${req.cookies.nickname}`);
-    jwt.verify(token, scret, function (err, decode) {
-        if (err) return resFun(res, 20001, 'token信息错误');
-    })
+    const r = await deJwt(token);
+    if (!r) return resFun(res, 20001, 'token信息错误');
     return next();
 }
 
 module.exports = {
     getToken,
-    decodeToken
+    decodeToken,
+    deJwt
 };
