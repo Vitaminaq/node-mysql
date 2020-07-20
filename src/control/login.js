@@ -73,6 +73,7 @@ const onkeyLogin = async (req, res) => {
         res.cookie('uid', r[0].uid, { path: '/', secure: false, signed: false });
         return resSuc(res, token);
     } else {
+        delete params.code;
         const rParams = {
             username: '',
             nickname: '',
