@@ -64,8 +64,8 @@ const onkeyLogin = async (req, res) => {
         return resEmp(res);
     }
     // 查询手机号
-    const r = await isExitPhone(params.phone);
-    if (r === 1) return resErr(res);
+    // const r = await isExitPhone(params.phone);
+    // if (r === 1) return resErr(res);
     // 用户存在 - 登录
     if (r[0]) {
         const token = jwt.sign({uid: r[0].uid}, scret, { expiresIn: 86400 });
@@ -73,7 +73,6 @@ const onkeyLogin = async (req, res) => {
         res.cookie('uid', r[0].uid, { path: '/', secure: false, signed: false });
         return resSuc(res, token);
     } else {
-        // delete params.code;
         const rParams = {
             username: '',
             nickname: '',
@@ -82,7 +81,7 @@ const onkeyLogin = async (req, res) => {
             password: '',
             age: '12',
             creatAt: Date.now(),
-            // ...params
+            ...params
         }
         if (!params.headimg) {
             if (params.sex === '男') {
