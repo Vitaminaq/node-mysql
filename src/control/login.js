@@ -73,7 +73,7 @@ const onkeyLogin = async (req, res) => {
         res.cookie('uid', r[0].uid, { path: '/', secure: false, signed: false });
         return resSuc(res, token);
     } else {
-        delete params.code;
+        // delete params.code;
         const rParams = {
             username: '',
             nickname: '',
@@ -82,7 +82,7 @@ const onkeyLogin = async (req, res) => {
             password: '',
             age: '12',
             creatAt: Date.now(),
-            ...params
+            // ...params
         }
         if (!params.headimg) {
             if (params.sex === '男') {
