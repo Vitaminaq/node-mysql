@@ -18,6 +18,7 @@ const getToken = async (req, res, next) => {
     }
     !req.my && (req.my = {});
     const token = req.cookies.token || req.headers.authorization || '';
+    token && (req.my.token = token);
     if (!token || token === 'null') {
         req.my.uid = 0;
         return next();

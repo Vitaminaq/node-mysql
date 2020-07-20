@@ -1,6 +1,7 @@
 'use strict';
 
 const { getArtic, saveView } = require('../server/chatroom');
+const { getUserNickname } = require('../server/detail');
 const { isClickArtic } = require('../server/common');
 const { resEmp, resFun, resErr, resSuc } = require('../common/response');
 const isEmpty = require('../common/isEmpty');
@@ -23,15 +24,38 @@ const getArtics = async function (req, res) {
     }
     const r = await getArtic(params);
     if (r === 1) return resErr(res);
-    if (r.r1 && r.r1.length) {
+    const hasList = r.r1 && r.r1.length;
+
+    const imgReg = /(https|http).*?(?:jpg|png|jpeg|gif)/gi;
+
+    if (hasList) {
         r.r1 = r.r1.map(i => {
             i.isClick = false;
+            const imgArr = i.msg.match(imgReg);
+            i.imgList = imgArr;
+            if (!i.imgList) {
+                i.imgList = [];
+            }
+            i.msgText = i.msg.replace(/<[^>]+>/g,"");
             return i;
         })
     }
+    if (hasList) {
+        r.r1 = await Promise.all(r.r1.map(async (i) => {
+            const hs = await getUserNickname(i.uid);
+            if (!hs || !hs.length) {
+                i.nickname = `游客${i.uid}`;
+                i.headimg = '/static/images/man.png';
+            } else {
+                i.nickname = hs[0].nickname;
+                i.headimg = hs[0].headimg;
+            }
+            return i;
+        }));
+    }
     const uid = +req.my.uid || 0;
-    if (uid && r.r1 && r.r1.length) {
-        const car = await Promise.all(r.r1.map((v, i) => {
+    if (uid && hasList) {
+        const car = await Promise.all(r.r1.map((v) => {
             return isClickArtic({ articId: v.articId, uid });
         }));
         car.forEach((c, i) => {

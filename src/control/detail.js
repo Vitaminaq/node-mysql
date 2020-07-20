@@ -6,7 +6,8 @@ const {
     commentArtic,
     clickComment,
     getIsClickComment,
-    getArticComment
+    getArticComment,
+    getUserNickname
 } = require('../server/detail');
 const { resEmp, resFun, resErr, resSuc } = require('../common/response');
 const isEmpty = require('../common/isEmpty');
@@ -68,6 +69,15 @@ const getArticComments = async function (req, res) {
             i.isClickComment = true;
         } else {
             i.isClickComment = false;
+        }
+        // 查找用户头像
+        const hs = await getUserNickname(i.uid);
+        if (!hs || !hs.length) {
+            i.nickname = `游客${i.uid}`;
+            i.headimg = '/static/images/man.png';
+        } else {
+            i.nickname = hs[0].nickname;
+            i.headimg = hs[0].headimg;
         }
         return i;
     }));

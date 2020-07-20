@@ -47,6 +47,22 @@ const getArticComment = async function ({ articId, field, sort, page, limit }) {
 }
 
 /**
+ * 查找用户头像昵称
+ * @param {number} uid 用户id
+ */
+const getUserNickname = async (uid) => {
+    try {
+        const r = await query(
+            `select nickname, headimg from usermessage where uid = ?`, [uid]
+        );
+        return r;
+    } catch (e) {
+        console.log(`错误为${e}`);
+        return 1;
+    }
+}
+
+/**
  * 当前用户是否点赞该评论
  * @param {number} nickname   昵称
  * @param {string} commentId  评论号
@@ -161,5 +177,6 @@ module.exports = {
     clickArtic,
     commentArtic,
     clickComment,
-    getIsClickComment
+    getIsClickComment,
+    getUserNickname
 };

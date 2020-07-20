@@ -74,8 +74,8 @@ const onkeyLogin = async (req, res) => {
         return resSuc(res, token);
     } else {
         const rParams = {
-            username: '无名网友',
-            nickname: '无名网友',
+            username: '',
+            nickname: '',
             sex: '女',
             headimg: '',
             password: '',
