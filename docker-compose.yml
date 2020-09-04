@@ -1,0 +1,11 @@
+version: '3.0'
+
+services:
+  node-cfsw:
+    container_name: node-cfsw
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3005:3005
+    image: 1109614355/node-cfsw:1.0.0
