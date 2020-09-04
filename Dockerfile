@@ -18,6 +18,6 @@ RUN yarn
 
 RUN echo 'Success!!!'
 
-EXPOSE 3005
+# EXPOSE 3005
 
-CMD ["yarn", "start"]
+# CMD ["yarn", "start"]

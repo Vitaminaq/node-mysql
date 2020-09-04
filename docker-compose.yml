@@ -8,4 +8,4 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3005:3005
-    image: 1109614355/node-cfsw:1.0.0
+    image: 1109614355/node-cfsw:1.0.2
